@@ -40,23 +40,23 @@ public class MitosisSystem : JobComponentSystem
         if (currentCooldown <= 0)
         {
             currentCooldown = totalCooldown;
-            NativeArray<Entity> allEntities = EntityManager.GetAllEntities(Allocator.TempJob);
-            for (int i = 0; i < allEntities.Length; i++)
-            {
-                Entity e = EntityManager.CreateEntity(EnemySpawner._cellArchetype);
-                if (EntityManager.HasComponent<MitosisData>(e))
-                {
-                    EntityManager.SetComponentData(e, new Position() {Value = EntityManager.GetComponentData<Position>(allEntities[i]).Value});
-                }
-            }
+//            NativeArray<Entity> allEntities = EntityManager.GetAllEntities(Allocator.TempJob);
+//            for (int i = 0; i < allEntities.Length; i++)
+//            {
+//                Entity e = EntityManager.CreateEntity(EnemySpawner._cellArchetype);
+//                if (EntityManager.HasComponent<MitosisData>(e))
+//                {
+//                    EntityManager.SetComponentData(e, new Position() {Value = EntityManager.GetComponentData<Position>(allEntities[i]).Value});
+//                }
+//            }
 
         }
         return job.Schedule(this, inputDeps);
     }
     
-    public struct MitosisData : IComponentData
-    {
-        public int A;
-    }
 }
 
+public struct MitosisData : IComponentData
+{
+    public int A;
+}
