@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ContentModelStore">
+    <e p="C:\Users\Toshiba Z30\.Rider2018.2\system\extResources" t="IncludeRecursive" />
+    <e p="C:\Users\Toshiba Z30\.Rider2018.2\system\resharper-host\Local\Transient\ReSharperHost\v182\SolutionCaches\_ECSJam.-1292661633.00" t="ExcludeRecursive" />
+    <e p="C:\Users\Toshiba Z30\Desktop\Unity Projects\ECSJam" t="IncludeRecursive">
+      <e p="Assembly-CSharp.csproj" t="IncludeRecursive" />
+      <e p="Assets" t="Include">
+        <e p="Scripts" t="Include">
+          <e p="AvoidanceSystem.cs" t="Include" />
+          <e p="EnemyBounceSystem.cs" t="Include" />
+          <e p="EnemyComponent.cs" t="Include" />
+          <e p="EnemyData.cs" t="Include" />
+          <e p="EnemyPositioningSystem.cs" t="Include" />
+          <e p="EnemySpawner.cs" t="Include" />
+          <e p="EnemySwaySystem.cs" t="Include" />
+          <e p="InputComponent.cs" t="Include" />
+          <e p="MitosisSystem.cs" t="Include" />
+          <e p="PlayerMovementSystem.cs" t="Include" />
+        </e>
+      </e>
+      <e p="ECSJam.sln" t="IncludeFlat" />
+      <e p="Library" t="ExcludeRecursive" />
+      <e p="obj" t="ExcludeRecursive" />
+      <e p="packages" t="ExcludeRecursive" />
+      <e p="Temp" t="ExcludeRecursive">
+        <e p="bin" t="ExcludeRecursive" />
+      </e>
+    </e>
+  </component>
+</project>
