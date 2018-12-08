@@ -11,7 +11,9 @@ public class EnemySpawner : MonoBehaviour
 	private static MeshInstanceRenderer _meshRenderer;
 	public static EntityArchetype _cellArchetype;
 
-	[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+    static int total;
+
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
 	public static void Initialize()
 	{
 		_entityManager = World.Active.GetOrCreateManager<EntityManager>();
@@ -64,4 +66,29 @@ public class EnemySpawner : MonoBehaviour
             //Object.Instantiate(Enemy, new Vector3(Random.value * 50 - 25, Enemy.transform.position.y, Random.value * 50 - 25), Enemy.transform.rotation);
         }
 	}
+
+    // Nothketov dirty za testing
+    
+    public static void SpawnEnemyAtPosition(Vector3 pos)
+    {
+        total++;
+        int index = total;
+
+        Entity enemyEntity = _entityManager.CreateEntity(_cellArchetype);
+        _entityManager.SetComponentData(enemyEntity, new Position { Value = new float3(pos.x, pos.y, pos.z) });
+        _entityManager.SetComponentData(enemyEntity, new Rotation { Value = quaternion.identity });
+        //_entityManager.SetComponentData(enemyEntity, new Heading{ Value = new float3(1,0,0)});
+        _entityManager.SetComponentData(enemyEntity, new EnemyData() { Speed = 0, SwayAngle = 0, SwayDirection = 1 });
+        _entityManager.SetComponentData(enemyEntity, new PositioningData() { Index = index });
+        //_entityManager.SetComponentData(enemyEntity, _meshRenderer);
+
+        _entityManager.AddSharedComponentData(enemyEntity, _meshRenderer);
+
+        Debug.Log("Spawned " + index);
+    }
+
+    public static void SpawnEnemy()
+    {
+        SpawnEnemy(UnityEngine.Random.Range(0, int.MaxValue));
+    }
 }
