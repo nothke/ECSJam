@@ -22,7 +22,7 @@ public class EnemySpawner : MonoBehaviour
 			typeof(EnemyData),
 			typeof(PositioningData),
 			//typeof(MeshInstanceRenderer),
-			typeof(TransformMatrix));
+			typeof(LocalToWorld));
 	}
 
 	[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
@@ -39,7 +39,7 @@ public class EnemySpawner : MonoBehaviour
 	private static void SpawnEnemy(int index)
 	{
 		Entity enemyEntity = _entityManager.CreateEntity(_cubeArchetype);
-		_entityManager.SetComponentData(enemyEntity, new Position{ Value = new float3(Random.value * 50 - 25, .5f + Random.value*2, Random.value * 50 - 25)});
+		_entityManager.SetComponentData(enemyEntity, new Position{ Value = new float3(UnityEngine.Random.value * 50 - 25, .5f + UnityEngine.Random.value*2, UnityEngine.Random.value * 50 - 25)});
 		_entityManager.SetComponentData(enemyEntity, new Rotation{ Value = quaternion.identity });
 		//_entityManager.SetComponentData(enemyEntity, new Heading{ Value = new float3(1,0,0)});
 		_entityManager.SetComponentData(enemyEntity, new EnemyData(){ Speed = 0, SwayAngle = 0, SwayDirection = 1});

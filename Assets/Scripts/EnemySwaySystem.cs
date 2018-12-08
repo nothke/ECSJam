@@ -25,7 +25,7 @@ public class EnemySwaySystem : JobComponentSystem
             }
             data.SwayAngle += swaySpeed * data.SwayDirection * DeltaTime;
             
-            rotation.Value = math.mul(math.normalize(rotation.Value), math.axisAngle(math.forward(rotation.Value), swaySpeed * data.SwayDirection * DeltaTime));
+            rotation.Value = math.mul(math.normalize(rotation.Value), quaternion.AxisAngle(math.forward(rotation.Value), swaySpeed * data.SwayDirection * DeltaTime));
         }
         
     }
@@ -36,6 +36,6 @@ public class EnemySwaySystem : JobComponentSystem
         {
             DeltaTime = Time.deltaTime
         };
-        return job.Schedule(this, 64, inputDeps);
+        return job.Schedule(this, inputDeps);
     }
 }

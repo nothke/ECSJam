@@ -33,6 +33,6 @@ public class EnemyBounceSystem : JobComponentSystem
         {
             DeltaTime = Time.deltaTime
         };
-        return job.Schedule(this, 64, inputDeps);
+        return job.Schedule(this, inputDeps);
     }
 }
