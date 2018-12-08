@@ -25,7 +25,7 @@ public class EnemySpawner : MonoBehaviour
 			typeof(EnemyData),
 			typeof(PositioningData),
 			typeof(AvoidanceData),
-			typeof(MitosisData),
+			//typeof(MitosisData),
 			//typeof(MeshInstanceRenderer),
 			typeof(LocalToWorld));
 	}
@@ -79,6 +79,7 @@ public class EnemySpawner : MonoBehaviour
         _entityManager.SetComponentData(enemyEntity, new Rotation { Value = quaternion.identity });
         //_entityManager.SetComponentData(enemyEntity, new Heading{ Value = new float3(1,0,0)});
         _entityManager.SetComponentData(enemyEntity, new EnemyData() { Speed = 0, SwayAngle = 0, SwayDirection = 1 });
+	    _entityManager.SetComponentData(enemyEntity, new Scale() { Value = new float3(1,1,1)});
         _entityManager.SetComponentData(enemyEntity, new PositioningData() { Index = index });
         //_entityManager.SetComponentData(enemyEntity, _meshRenderer);
 

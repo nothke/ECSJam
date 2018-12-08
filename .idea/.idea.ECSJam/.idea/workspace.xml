@@ -18,12 +18,12 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="cs" value="5042" />
+          <entry key="cs" value="5044" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="C#" value="5042" />
+          <entry key="C#" value="5044" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
@@ -40,20 +40,23 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Assets/Scripts/EnemySpawner.cs">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="105">
-              <caret line="12" selection-start-line="12" selection-end-line="15" selection-end-column="5" />
+            <state relative-caret-position="421">
+              <caret line="81" column="95" selection-start-line="81" selection-start-column="95" selection-end-line="81" selection-end-column="95" />
               <folding>
-                <marker date="1544302152952" expanded="false" signature="6:146" ph="..." />
-                <marker date="1544302152952" expanded="true" signature="189:2572" ph="{...}" />
-                <marker date="1544302152952" expanded="true" signature="445:793" ph="{...}" />
-                <marker date="1544302152952" expanded="true" signature="911:1064" ph="{...}" />
-                <marker date="1544302152952" expanded="true" signature="1035:1061" ph="{...}" />
-                <marker date="1544302152952" expanded="true" signature="1107:2296" ph="{...}" />
-                <marker date="1544302152952" expanded="true" signature="2351:2570" ph="{...}" />
-                <marker date="1544302152952" expanded="true" signature="2391:2567" ph="{...}" />
+                <marker date="1544305661130" expanded="false" signature="6:146" ph="..." />
+                <marker date="1544305661130" expanded="true" signature="189:3743" ph="{...}" />
+                <marker date="1544305661130" expanded="true" signature="471:821" ph="{...}" />
+                <marker date="1544305661130" expanded="true" signature="735:792" ph="/* typeof(MitosisData), ... */" />
+                <marker date="1544305661130" expanded="true" signature="939:1092" ph="{...}" />
+                <marker date="1544305661130" expanded="true" signature="1063:1089" ph="{...}" />
+                <marker date="1544305661130" expanded="true" signature="1135:2324" ph="{...}" />
+                <marker date="1544305661130" expanded="true" signature="2379:2598" ph="{...}" />
+                <marker date="1544305661130" expanded="true" signature="2419:2595" ph="{...}" />
+                <marker date="1544305661130" expanded="true" signature="2695:3629" ph="{...}" />
+                <marker date="1544305661130" expanded="true" signature="3666:3741" ph="{...}" />
               </folding>
             </state>
           </provider>
@@ -95,11 +98,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Assets/Scripts/EnemyPositioningSystem.cs">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="465">
-              <caret line="65" column="15" selection-start-line="48" selection-start-column="17" selection-end-line="65" selection-end-column="15" />
+            <state relative-caret-position="495">
+              <caret line="61" column="29" selection-start-line="61" selection-start-column="29" selection-end-line="61" selection-end-column="29" />
               <folding>
                 <marker date="1544305102089" expanded="true" signature="6:288" ph="..." />
                 <marker date="1544305102089" expanded="true" signature="346:4890" ph="{...}" />
@@ -126,8 +129,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Assets/Scripts/MitosisSystem.cs">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="195">
-              <caret line="39" column="33" selection-start-line="39" selection-start-column="33" selection-end-line="39" selection-end-column="33" />
+            <state relative-caret-position="15">
+              <caret line="21" column="43" selection-start-line="21" selection-start-column="32" selection-end-line="21" selection-end-column="43" />
               <folding>
                 <marker date="1544295623405" expanded="true" signature="6:216" ph="..." />
                 <marker date="1544295623405" expanded="true" signature="265:1798" ph="{...}" />
@@ -173,8 +176,8 @@
       <list>
         <option value="$PROJECT_DIR$/Assets/Scripts/MitosisSystem.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/AvoidanceSystem.cs" />
-        <option value="$PROJECT_DIR$/Assets/Scripts/EnemySpawner.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/EnemyPositioningSystem.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/EnemySpawner.cs" />
       </list>
     </option>
   </component>
@@ -262,12 +265,12 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1544266795706</updated>
-      <workItem from="1544266804167" duration="27191000" />
+      <workItem from="1544266804167" duration="27824000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="27191000" />
+    <option name="totallyTimeSpent" value="27824000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -553,24 +556,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Assets/Scripts/MitosisSystem.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="195">
-          <caret line="39" column="33" selection-start-line="39" selection-start-column="33" selection-end-line="39" selection-end-column="33" />
-          <folding>
-            <marker date="1544295623405" expanded="true" signature="6:216" ph="..." />
-            <marker date="1544295623405" expanded="true" signature="265:1798" ph="{...}" />
-            <marker date="1544295623405" expanded="true" signature="518:879" ph="{...}" />
-            <marker date="1544295623405" expanded="true" signature="656:864" ph="{...}" />
-            <marker date="1544295623405" expanded="true" signature="943:1791" ph="{...}" />
-            <marker date="1544295623405" expanded="true" signature="1044:1112" ph="{...}" />
-            <marker date="1544295623405" expanded="true" signature="1147:1739" ph="{...}" />
-            <marker date="1544295623405" expanded="true" signature="1203:1728" ph="/* NativeArray&lt;Entity&gt; allEntities = EntityManager.GetAllEntities(Allocator.TempJob); ... */" />
-            <marker date="1544295623405" expanded="true" signature="1842:1864" ph="{...}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Assets/Scripts/AvoidanceSystem.cs">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="105">
@@ -588,27 +573,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Assets/Scripts/EnemySpawner.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="105">
-          <caret line="12" selection-start-line="12" selection-end-line="15" selection-end-column="5" />
-          <folding>
-            <marker date="1544302152952" expanded="false" signature="6:146" ph="..." />
-            <marker date="1544302152952" expanded="true" signature="189:2572" ph="{...}" />
-            <marker date="1544302152952" expanded="true" signature="445:793" ph="{...}" />
-            <marker date="1544302152952" expanded="true" signature="911:1064" ph="{...}" />
-            <marker date="1544302152952" expanded="true" signature="1035:1061" ph="{...}" />
-            <marker date="1544302152952" expanded="true" signature="1107:2296" ph="{...}" />
-            <marker date="1544302152952" expanded="true" signature="2351:2570" ph="{...}" />
-            <marker date="1544302152952" expanded="true" signature="2391:2567" ph="{...}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Assets/Scripts/EnemyPositioningSystem.cs">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="465">
-          <caret line="65" column="15" selection-start-line="48" selection-start-column="17" selection-end-line="65" selection-end-column="15" />
+        <state relative-caret-position="495">
+          <caret line="61" column="29" selection-start-line="61" selection-start-column="29" selection-end-line="61" selection-end-column="29" />
           <folding>
             <marker date="1544305102089" expanded="true" signature="6:288" ph="..." />
             <marker date="1544305102089" expanded="true" signature="346:4890" ph="{...}" />
@@ -627,6 +595,44 @@
             <marker date="1544305102089" expanded="true" signature="4367:4484" ph="{...}" />
             <marker date="1544305102089" expanded="true" signature="4722:4888" ph="{...}" />
             <marker date="1544305102089" expanded="true" signature="4938:4989" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Assets/Scripts/MitosisSystem.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="15">
+          <caret line="21" column="43" selection-start-line="21" selection-start-column="32" selection-end-line="21" selection-end-column="43" />
+          <folding>
+            <marker date="1544295623405" expanded="true" signature="6:216" ph="..." />
+            <marker date="1544295623405" expanded="true" signature="265:1798" ph="{...}" />
+            <marker date="1544295623405" expanded="true" signature="518:879" ph="{...}" />
+            <marker date="1544295623405" expanded="true" signature="656:864" ph="{...}" />
+            <marker date="1544295623405" expanded="true" signature="943:1791" ph="{...}" />
+            <marker date="1544295623405" expanded="true" signature="1044:1112" ph="{...}" />
+            <marker date="1544295623405" expanded="true" signature="1147:1739" ph="{...}" />
+            <marker date="1544295623405" expanded="true" signature="1203:1728" ph="/* NativeArray&lt;Entity&gt; allEntities = EntityManager.GetAllEntities(Allocator.TempJob); ... */" />
+            <marker date="1544295623405" expanded="true" signature="1842:1864" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Assets/Scripts/EnemySpawner.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="421">
+          <caret line="81" column="95" selection-start-line="81" selection-start-column="95" selection-end-line="81" selection-end-column="95" />
+          <folding>
+            <marker date="1544305661130" expanded="false" signature="6:146" ph="..." />
+            <marker date="1544305661130" expanded="true" signature="189:3743" ph="{...}" />
+            <marker date="1544305661130" expanded="true" signature="471:821" ph="{...}" />
+            <marker date="1544305661130" expanded="true" signature="735:792" ph="/* typeof(MitosisData), ... */" />
+            <marker date="1544305661130" expanded="true" signature="939:1092" ph="{...}" />
+            <marker date="1544305661130" expanded="true" signature="1063:1089" ph="{...}" />
+            <marker date="1544305661130" expanded="true" signature="1135:2324" ph="{...}" />
+            <marker date="1544305661130" expanded="true" signature="2379:2598" ph="{...}" />
+            <marker date="1544305661130" expanded="true" signature="2419:2595" ph="{...}" />
+            <marker date="1544305661130" expanded="true" signature="2695:3629" ph="{...}" />
+            <marker date="1544305661130" expanded="true" signature="3666:3741" ph="{...}" />
           </folding>
         </state>
       </provider>
