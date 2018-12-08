@@ -7,7 +7,7 @@ using UnityEngine;
 
 public class EnemySpawner : MonoBehaviour
 {
-	private static EntityManager _entityManager;
+	public static EntityManager _entityManager;
 	private static MeshInstanceRenderer _meshRenderer;
 	public static EntityArchetype _cellArchetype;
 
@@ -23,7 +23,7 @@ public class EnemySpawner : MonoBehaviour
 			typeof(EnemyData),
 			typeof(PositioningData),
 			typeof(AvoidanceData),
-			typeof(MitosisSystem.MitosisData),
+			typeof(MitosisData),
 			//typeof(MeshInstanceRenderer),
 			typeof(LocalToWorld));
 	}
@@ -42,12 +42,12 @@ public class EnemySpawner : MonoBehaviour
 	public static void SpawnEnemy(int index)
 	{
 		Entity enemyEntity = _entityManager.CreateEntity(_cellArchetype);
-		_entityManager.SetComponentData(enemyEntity, new Position{ Value = new float3(UnityEngine.Random.value * 50 - 25, .5f + UnityEngine.Random.value*2, UnityEngine.Random.value * 50 - 25)});
+		_entityManager.SetComponentData(enemyEntity, new Position{ Value = new float3(UnityEngine.Random.value * 50, .5f + UnityEngine.Random.value*2, UnityEngine.Random.value * 50)});
 		_entityManager.SetComponentData(enemyEntity, new Rotation{ Value = quaternion.identity });
 		//_entityManager.SetComponentData(enemyEntity, new Heading{ Value = new float3(1,0,0)});
 		_entityManager.SetComponentData(enemyEntity, new EnemyData(){ Speed = 0, SwayAngle = 0, SwayDirection = 1});
 		_entityManager.SetComponentData(enemyEntity, new PositioningData(){ Index = index });
-		//_entityManager.SetComponentData(enemyEntity, new MitosisData(){ a = 0 });
+		//_entityManager.SetComponentData(enemyEntity, new MitosisData(){ A = 0 });
 		_entityManager.SetComponentData(enemyEntity, new Scale() { Value = new float3(1,1,1)});
 		_entityManager.SetComponentData(enemyEntity, new AvoidanceData() { Force =  new float2(0,0)});
 		//_entityManager.SetComponentData(enemyEntity, _meshRenderer);
