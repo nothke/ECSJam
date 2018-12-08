@@ -24,7 +24,6 @@ public class EnemySpawner : MonoBehaviour
 			typeof(Scale),
 			typeof(EnemyData),
 			typeof(PositioningData),
-			typeof(AvoidanceData),
 			//typeof(MitosisData),
 			//typeof(MeshInstanceRenderer),
 			typeof(LocalToWorld));
@@ -35,7 +34,7 @@ public class EnemySpawner : MonoBehaviour
 	{
 		_meshRenderer = GameObject.FindObjectOfType<MeshInstanceRendererComponent>().Value;
 		
-		for (int i = 0; i < 100; i++)
+		for (int i = 0; i < 1000; i++)
 		{
 			SpawnEnemy(i);
 		}
@@ -51,7 +50,6 @@ public class EnemySpawner : MonoBehaviour
 		_entityManager.SetComponentData(enemyEntity, new PositioningData(){ Index = index });
 		//_entityManager.SetComponentData(enemyEntity, new MitosisData(){ A = 0 });
 		_entityManager.SetComponentData(enemyEntity, new Scale() { Value = new float3(1,1,1)});
-		_entityManager.SetComponentData(enemyEntity, new AvoidanceData() { Force =  new float2(0,0)});
 		//_entityManager.SetComponentData(enemyEntity, _meshRenderer);
 		
 		_entityManager.AddSharedComponentData(enemyEntity, _meshRenderer);
