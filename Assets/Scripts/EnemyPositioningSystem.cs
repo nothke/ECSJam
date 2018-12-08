@@ -15,8 +15,6 @@ public class EnemyPositioningSystem : JobComponentSystem
     
     private struct PositionJob : IJobProcessComponentData<PositioningData, Position>
     {
-        public float DeltaTime;
-
         public void Execute(ref PositioningData data, ref Position position)
         {
             int distance = 2 + (data.Index / 50) * 2;
@@ -34,10 +32,7 @@ public class EnemyPositioningSystem : JobComponentSystem
     {
         centerPos = GameObject.FindObjectOfType<InputComponent>().transform.position;
         globalOffset += .2f;
-        var job = new PositionJob
-        {
-            DeltaTime = Time.deltaTime
-        };
+        var job = new PositionJob();
         return job.Schedule(this, inputDeps);
     }
 }
