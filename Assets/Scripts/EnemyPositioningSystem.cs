@@ -26,7 +26,7 @@ public class EnemyPositioningSystem : JobComponentSystem
     private struct PositionJob : IJobProcessComponentData<PositioningData, Position>
     {
         private readonly NativeArray<int> gridIndexData;
-        private NativeArray<float3> entityPositions;
+        private readonly NativeArray<float3> entityPositions;
 
         public PositionJob(NativeArray<int> gridData, NativeArray<float3> ent)
         {
@@ -46,24 +46,24 @@ public class EnemyPositioningSystem : JobComponentSystem
             position.Value.y = oldPos.y;
             
             // apply avoidance force
-//            position.Value.x += data.Force.x / 50;
-//            position.Value.z += data.Force.y / 50;
-//            data.Force *= .9f;
-//            
-//            // force
-//            int outerIndex = CoordsToOuterIndex((int)position.Value.x, (int)position.Value.z);
-//            if (outerIndex >= 0 && outerIndex < gridIndexData.Length)
-//            {
-//                for (int i = outerIndex; i < outerIndex + numberOfForcesPerCell; i++)
-//                {
-//                    int entityIndex = gridIndexData[i];
-//                    if (entityIndex != data.Index && entityIndex != 0)
-//                    {
-//                        var entPos = entityPositions[entityIndex];
-//                        data.Force += new float2(position.Value.x - entPos.x, position.Value.z - entPos.z);
-//                    }
-//                }
-//            }
+            position.Value.x += data.Force.x / 100;
+            position.Value.z += data.Force.y / 100;
+            data.Force *= .5f;
+            
+            // force
+            int outerIndex = CoordsToOuterIndex((int)position.Value.x, (int)position.Value.z);
+            if (outerIndex >= 0 && outerIndex < gridIndexData.Length)
+            {
+                for (int i = outerIndex; i < outerIndex + numberOfForcesPerCell; i++)
+                {
+                    int entityIndex = gridIndexData[i];
+                    if (entityIndex != data.Index && entityIndex != 0)
+                    {
+                        var entPos = entityPositions[entityIndex];
+                        data.Force += new float2(position.Value.x - entPos.x, position.Value.z - entPos.z);
+                    }
+                }
+            }
         }
         
         
@@ -122,7 +122,15 @@ public class EnemyPositioningSystem : JobComponentSystem
         var job = new PositionJob(gridIndexData, entityPositions);
         return job.Schedule(this, inputDeps);
     }
-    
+
+    protected override void OnStopRunning()
+    {
+        gridIndexData.Dispose();
+        entities.Dispose();
+        entityPositions.Dispose();
+        base.OnStopRunning();
+    }
+
     public static int Hash(int x, int z) {
         int hash = x;
         hash = (hash * 397) ^ z;
