@@ -5,6 +5,7 @@ using UnityEngine;
 public class Pipa : MonoBehaviour
 {
 
+    public float speedMult = 10;
     Vector3 lastmouse;
 
     private void Start()
@@ -14,9 +15,13 @@ public class Pipa : MonoBehaviour
 
     void Update()
     {
+        /*
         Vector3 mouseDiff = lastmouse - Input.mousePosition;
-        transform.position += new Vector3(-mouseDiff.x/2 + mouseDiff.x, 0, -mouseDiff.y / 2 + mouseDiff.y) * 0.1f;
+        transform.position -= new Vector3(-mouseDiff.x/2 + mouseDiff.x, 0, -mouseDiff.y / 2 + mouseDiff.y) * 0.1f;
         lastmouse = Input.mousePosition;
+        */
+
+        transform.position += new Vector3(Input.GetAxis("RHorizontal"), 0, Input.GetAxis("RVertical")) * Time.deltaTime * speedMult;
 
         if (Input.GetMouseButton(0))
         {

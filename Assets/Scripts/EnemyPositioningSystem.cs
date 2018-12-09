@@ -13,7 +13,7 @@ using Random = UnityEngine.Random;
 
 public class EnemyPositioningSystem : JobComponentSystem
 {
-    private static int playAreaSize = 50;
+    public static int playAreaSize = 256;
     private static int numberOfForcesPerCell = 10;
     private static float3 centerPos = new float3(0, 0, 0);
     private static float3 direction = new float3(1, 0, 0);
@@ -22,9 +22,9 @@ public class EnemyPositioningSystem : JobComponentSystem
     private NativeArray<Entity> entities;
     private NativeArray<float3> entityPositions;
     private static bool entitiesLoaded;
-    
-    
-    private struct PositionJob : IJobProcessComponentData<PositioningData, Position>
+
+
+    private struct PositionJob : IJobProcessComponentData<PositioningData, Position> // Scale
     {
         private readonly NativeArray<int> gridIndexData;
         private readonly NativeArray<float3> entityPositions;
@@ -34,25 +34,48 @@ public class EnemyPositioningSystem : JobComponentSystem
             gridIndexData = gridData;
             entityPositions = ent;
         }
-        
-        public void Execute(ref PositioningData data, ref Position position)
+
+        public void Execute(ref PositioningData data, ref Position position) // , ref Scale scale
         {
             data.PreviousPosition.x = position.Value.x;
             data.PreviousPosition.y = position.Value.z;
-            
+
+            /*
             int distance = 2 + (data.Index / 50) * 2;
 
             float circleOffset = globalOffset * (distance % 4 == 0 ? -1 : 1);
             var dir = Quaternion.Euler(0, data.Index * 7.2f + circleOffset, 0) * direction;
             var oldY = position.Value.y;
             position.Value = math.lerp(position.Value, centerPos + new float3(dir.x, dir.y, dir.z) * distance, 0.1f);
-            position.Value.y = oldY;
-            
+            position.Value.y = oldY;*/
+
             // apply avoidance force
             position.Value.x += data.Force.x;
             position.Value.z += data.Force.y;
             data.Force *= .8f;
-            
+
+            //scale.Value.x = 1;
+
+            if (data.life == 0)
+            {
+                position.Value = new float3(100000, 100000, 100000);
+            }
+
+            // noise
+            //var noiz = noise.cellular(new float2(position.Value.x * 0.01f, position.Value.z * 0.01f));
+            //data.Force = (-2 + noiz);
+            //data.Force = noiz;
+
+            float xin = playAreaSize / 2 - position.Value.x;
+            float zin = playAreaSize / 2 - position.Value.z;
+
+            //data.Force = new float2(
+                //xin * 0.01f,
+                //zin * 0.01f);
+
+            var noiz = noise.cellular(new float2(xin * 0.01f, zin * 0.01f));
+            data.Force = -0.5f + noiz;
+
             // force
             int outerIndex = CoordsToOuterIndex((int)position.Value.x, (int)position.Value.z);
             if (outerIndex >= 0 && outerIndex < gridIndexData.Length)
@@ -63,9 +86,10 @@ public class EnemyPositioningSystem : JobComponentSystem
                     if (entityIndex != data.Index && entityIndex != 0)
                     {
                         var entPos = entityPositions[entityIndex];
-                        if (math.distance(entPos, position.Value) < 1f)
+                        if (math.distance(entPos, position.Value) < 5f)
                         {
-                            data.Force = new float2(position.Value.x - entPos.x, position.Value.z - entPos.z)/2;
+                            //data.life--;
+                            data.Force = new float2(position.Value.x - entPos.x, position.Value.z - entPos.z) / 2;
                             break;
                         }
                         //data.Force += new float2(position.Value.x - entPos.x, position.Value.z - entPos.z);
@@ -102,7 +126,7 @@ public class EnemyPositioningSystem : JobComponentSystem
         entities = EnemySpawner.entityArray;
         centerPos = GameObject.FindObjectOfType<InputComponent>().transform.position;
         globalOffset += .2f;
-        
+
         // update avoidance data and calculate force;
         for (int i = 0; i < EnemySpawner.total; i++)
         {
@@ -111,8 +135,8 @@ public class EnemyPositioningSystem : JobComponentSystem
             entityPositions[i] = position.Value;
 
             // remove old position from grid
-            int outerIndex = CoordsToOuterIndex((int) indexForcePrevPos.PreviousPosition.x,
-                (int) indexForcePrevPos.PreviousPosition.y);
+            int outerIndex = CoordsToOuterIndex((int)indexForcePrevPos.PreviousPosition.x,
+                (int)indexForcePrevPos.PreviousPosition.y);
             if (outerIndex >= 0 && outerIndex < gridIndexData.Length)
             {
                 for (int innerIndex = outerIndex; innerIndex < outerIndex + numberOfForcesPerCell; innerIndex++)
@@ -123,7 +147,7 @@ public class EnemyPositioningSystem : JobComponentSystem
                     }
                 }
             }
-            
+
             // add new position to grid
             outerIndex = CoordsToOuterIndex((int)position.Value.x, (int)position.Value.z);
             if (outerIndex >= 0 && outerIndex < gridIndexData.Length)
@@ -137,7 +161,7 @@ public class EnemyPositioningSystem : JobComponentSystem
                 }
             }
         }
-        
+
         // start job
         var job = new PositionJob(gridIndexData, entityPositions);
         return job.Schedule(this, inputDeps);
@@ -150,9 +174,11 @@ public class EnemyPositioningSystem : JobComponentSystem
         entityPositions.Dispose();
         EnemySpawner.entityArray.Dispose();
         base.OnStopRunning();
+        Debug.Log("STAO JE JEBEM GA");
     }
 
-    public static int Hash(int x, int z) {
+    public static int Hash(int x, int z)
+    {
         int hash = x;
         hash = (hash * 397) ^ z;
         hash += hash << 3;
@@ -167,4 +193,5 @@ public struct PositioningData : IComponentData
     public int Index;
     public float2 Force;
     public float2 PreviousPosition;
+    public int life;
 }

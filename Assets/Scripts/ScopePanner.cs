@@ -44,7 +44,7 @@ public class ScopePanner : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Input.GetButtonDown("Fire1"))
             SwitchLens();
 
         x += Input.GetAxis("Horizontal") * speedMult * Time.deltaTime;
@@ -75,6 +75,8 @@ public class ScopePanner : MonoBehaviour
             {
                 puttingstate = 0;
                 stateTime = 1;
+
+                lensCover.position = restPoint.position;
             }
         }
 
@@ -89,7 +91,7 @@ public class ScopePanner : MonoBehaviour
     {
         startF += by * 10;
         dof.focusDistance.Override(startF + by * focusMult);
-        Debug.Log(startF);
+        //Debug.Log(startF);
     }
 
     void SwitchLens()

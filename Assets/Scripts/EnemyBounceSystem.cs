@@ -19,6 +19,7 @@ public class EnemyBounceSystem : JobComponentSystem
         {
             position.Value.y += data.Speed * DeltaTime;
             data.Speed -= gravity;
+
             if (position.Value.y <= .5f)
             {
                 data.Speed = 5f;
