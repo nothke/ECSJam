@@ -11,7 +11,7 @@ using Unity.Transforms;
 public class MitosisSystem : JobComponentSystem
 {
     private static EntityCommandBuffer commandBuffer;
-    private static float totalCooldown = 10;
+    private static float totalCooldown = 3;
     private static float currentCooldown = 10;
     
     
@@ -40,15 +40,18 @@ public class MitosisSystem : JobComponentSystem
         if (currentCooldown <= 0)
         {
             currentCooldown = totalCooldown;
-//            NativeArray<Entity> allEntities = EntityManager.GetAllEntities(Allocator.TempJob);
-//            for (int i = 0; i < allEntities.Length; i++)
-//            {
-//                Entity e = EntityManager.CreateEntity(EnemySpawner._cellArchetype);
-//                if (EntityManager.HasComponent<MitosisData>(e))
-//                {
-//                    EntityManager.SetComponentData(e, new Position() {Value = EntityManager.GetComponentData<Position>(allEntities[i]).Value});
-//                }
-//            }
+            NativeArray<Entity> allEntities = EntityManager.GetAllEntities(Allocator.TempJob);
+            int step = (int)EnemySpawner.entityArray.Length / 500;
+            for (int i = 0; i < EnemySpawner.entityArray.Length; i += step)
+            {
+                //Entity e = EntityManager.CreateEntity(EnemySpawner._cellArchetype);
+                EnemySpawner.SpawnEnemyAtPosition(EntityManager.GetComponentData<Position>(allEntities[i]).Value +
+                                                  EnemySpawner.ReturnRandomPositionOffset(1f));
+                //if (EntityManager.HasComponent<MitosisData>(e))
+                //{
+                //    EntityManager.SetComponentData(e, new Position() {Value = EntityManager.GetComponentData<Position>(allEntities[i]).Value});
+                //}
+            }
 
         }
         return job.Schedule(this, inputDeps);
