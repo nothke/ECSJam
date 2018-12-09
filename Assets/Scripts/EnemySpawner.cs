@@ -4,6 +4,7 @@ using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Rendering;
 using Unity.Transforms;
+using System;
 using UnityEngine;
 
 public class EnemySpawner : MonoBehaviour
@@ -13,7 +14,7 @@ public class EnemySpawner : MonoBehaviour
 	public static EntityArchetype _cellArchetype;
     public static NativeArray<Entity> entityArray;
 
-    static int total;
+    public static int total;
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
 	public static void Initialize()
@@ -32,17 +33,17 @@ public class EnemySpawner : MonoBehaviour
 	}
 
 
-    private void OnDisable()
-    {
+     void OnDisable()
+                 {
         entityArray.Dispose();
-    }
+                }
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
 	public static void InitializeWithScene()
 	{
 		_meshRenderer = GameObject.FindObjectOfType<MeshInstanceRendererComponent>().Value;
 		
-		for (int i = 0; i < 1000; i++)
+		for (int i = 0; i < 10000; i++)
 		{
 			SpawnEnemy(i);
 		}
@@ -50,6 +51,8 @@ public class EnemySpawner : MonoBehaviour
 
 	public static void SpawnEnemy(int index)
 	{
+        total++;
+
 		Entity enemyEntity = _entityManager.CreateEntity(_cellArchetype);
 		_entityManager.SetComponentData(enemyEntity, new Position{ Value = new float3(UnityEngine.Random.value * 50, .5f + UnityEngine.Random.value*2, UnityEngine.Random.value * 50)});
 		_entityManager.SetComponentData(enemyEntity, new Rotation{ Value = quaternion.identity });
@@ -98,4 +101,17 @@ public class EnemySpawner : MonoBehaviour
     {
         SpawnEnemy(UnityEngine.Random.Range(0, int.MaxValue));
     }
+
+    public static float3 ReturnRandomPositionOffset(float maxVal) {
+        float x = ReturnRandomFloat(maxVal);
+        float z = ReturnRandomFloat(maxVal);
+        return new float3(x, 0f, z);
+            
+    }
+
+    public static float ReturnRandomFloat(float maxVal) {
+        
+        float val = UnityEngine.Random.Range(-maxVal, maxVal);
+        return val;
+    } 
 }
