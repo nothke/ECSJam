@@ -49,8 +49,7 @@ public class ScopePanner : MonoBehaviour
 
         x += Input.GetAxis("Horizontal") * speedMult * Time.deltaTime;
         y += Input.GetAxis("Vertical") * speedMult * Time.deltaTime;
-        x += Input.GetAxis("HorizontalMouse") * speedMult * Time.deltaTime;
-        y += Input.GetAxis("VerticalMouse") * speedMult * Time.deltaTime;
+
         transform.position = new Vector3(x, z, y);
 
         if (puttingstate == 1)
