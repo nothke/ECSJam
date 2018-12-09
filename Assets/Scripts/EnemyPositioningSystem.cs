@@ -10,22 +10,20 @@ using Unity.Jobs;
 using Unity.Mathematics;
 using Unity.Transforms;
 using Random = UnityEngine.Random;
-using Unity.Burst;
 
 public class EnemyPositioningSystem : JobComponentSystem
 {
-    //public int playAreaSize = 256;
-    private int numberOfForcesPerCell = 5;
-    private float3 centerPos = new float3(0, 0, 0);
-    private float3 direction = new float3(1, 0, 0);
-    private float globalOffset = 0;
-    private NativeArray<int> gridIndexData;
-    private bool entitiesLoaded;
-
+    public static int playAreaSize = 256;
+    private static int numberOfForcesPerCell = 10;
+    private static float3 centerPos = new float3(0, 0, 0);
+    private static float3 direction = new float3(1, 0, 0);
+    private static float globalOffset = 0;
+    private static NativeArray<int> gridIndexData;
     private NativeArray<Entity> entities;
     private NativeArray<float3> entityPositions;
+    private static bool entitiesLoaded;
 
-    [BurstCompile]
+
     private struct PositionJob : IJobProcessComponentData<PositioningData, Position> // Scale
     {
         private readonly NativeArray<int> gridIndexData;
@@ -58,44 +56,37 @@ public class EnemyPositioningSystem : JobComponentSystem
 
             //scale.Value.x = 1;
 
-            /*
             if (data.life == 0)
             {
                 position.Value = new float3(100000, 100000, 100000);
-            }*/
+            }
 
             // noise
             //var noiz = noise.cellular(new float2(position.Value.x * 0.01f, position.Value.z * 0.01f));
             //data.Force = (-2 + noiz);
             //data.Force = noiz;
 
-            int playAreaSize = 400;
             float xin = playAreaSize / 2 - position.Value.x;
             float zin = playAreaSize / 2 - position.Value.z;
 
-            // SABIJAC
-            data.Force += new float2(
-                xin * 0.0005f,
-                zin * 0.0005f);
+            //data.Force = new float2(
+                //xin * 0.01f,
+                //zin * 0.01f);
 
-            var noiz = -0.5f + noise.cellular(new float2(xin * 0.01f, zin * 0.01f));
-            var noiz2 = -0.5f + noise.snoise(new float2(xin * 0.1f, zin * 0.1f));
-            data.Force += noiz * 0.2f + noiz2*0.2f;
-
-            int numberOfForcesPerCell = 10;
+            var noiz = noise.cellular(new float2(xin * 0.01f, zin * 0.01f));
+            data.Force = -0.5f + noiz;
 
             // force
             int outerIndex = CoordsToOuterIndex((int)position.Value.x, (int)position.Value.z);
             if (outerIndex >= 0 && outerIndex < gridIndexData.Length)
             {
-
                 for (int i = outerIndex; i < outerIndex + numberOfForcesPerCell; i++)
                 {
                     int entityIndex = gridIndexData[i];
                     if (entityIndex != data.Index && entityIndex != 0)
                     {
                         var entPos = entityPositions[entityIndex];
-                        if (math.distance(entPos, position.Value) < 3f)
+                        if (math.distance(entPos, position.Value) < 5f)
                         {
                             //data.life--;
                             data.Force = new float2(position.Value.x - entPos.x, position.Value.z - entPos.z) / 2;
@@ -114,9 +105,15 @@ public class EnemyPositioningSystem : JobComponentSystem
 
     private static int CoordsToOuterIndex(int x, int z)
     {
-        int numberOfForcesPerCell = 10;
-        int playAreaSize = 400;
         return x * playAreaSize * numberOfForcesPerCell + z * numberOfForcesPerCell;
+    }
+
+
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+    public static void Initialize()
+    {
+        gridIndexData = new NativeArray<int>(playAreaSize * playAreaSize * numberOfForcesPerCell, Allocator.Persistent);
+        entitiesLoaded = false;
     }
 
     protected override JobHandle OnUpdate(JobHandle inputDeps)
@@ -125,8 +122,6 @@ public class EnemyPositioningSystem : JobComponentSystem
         {
             entityPositions = new NativeArray<float3>(100000, Allocator.Persistent);
             entitiesLoaded = true;
-            int playAreaSize = 400;
-            gridIndexData = new NativeArray<int>(playAreaSize * playAreaSize * numberOfForcesPerCell, Allocator.Persistent);
         }
         entities = EnemySpawner.entityArray;
         centerPos = GameObject.FindObjectOfType<InputComponent>().transform.position;
@@ -177,8 +172,9 @@ public class EnemyPositioningSystem : JobComponentSystem
         gridIndexData.Dispose();
         entities.Dispose();
         entityPositions.Dispose();
-        //EnemySpawner.entityArray.Dispose();
+        EnemySpawner.entityArray.Dispose();
         base.OnStopRunning();
+        Debug.Log("STAO JE JEBEM GA");
     }
 
     public static int Hash(int x, int z)
@@ -192,7 +188,6 @@ public class EnemyPositioningSystem : JobComponentSystem
     }
 }
 
-[BurstCompile]
 public struct PositioningData : IComponentData
 {
     public int Index;

@@ -9,7 +9,7 @@ using Unity.Transforms;
 public class EnemyBounceSystem : JobComponentSystem
 {
 
-    private static float gravity = 1;
+    private static float gravity = 0.3f;
     
     private struct BounceJob : IJobProcessComponentData<EnemyData, Position>
     {

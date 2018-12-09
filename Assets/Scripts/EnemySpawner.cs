@@ -11,7 +11,6 @@ public class EnemySpawner : MonoBehaviour
 {
     public static EntityManager _entityManager;
     private static MeshInstanceRenderer _meshRenderer;
-    private static MeshInstanceRenderer _meshRenderer2;
     public static EntityArchetype _cellArchetype;
     public static NativeArray<Entity> entityArray;
 
@@ -36,19 +35,13 @@ public class EnemySpawner : MonoBehaviour
 
     void OnDisable()
     {
-        //entityArray.Dispose();
+        entityArray.Dispose();
     }
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
     public static void InitializeWithScene()
     {
-        var mrs = FindObjectsOfType<MeshInstanceRendererComponent>();
-
-        _meshRenderer = mrs[0].Value;
-        _meshRenderer2 = mrs[1].Value;
-
-        //_meshRenderer = GameObject.FindObjectOfType<MeshInstanceRendererComponent>().Value;
-        //_meshRenderer = GameObject.FindObjectOfType<MeshInstanceRendererComponent>().Value;
+        _meshRenderer = GameObject.FindObjectOfType<MeshInstanceRendererComponent>().Value;
 
         for (int i = 0; i < 10000; i++)
         {
@@ -57,15 +50,15 @@ public class EnemySpawner : MonoBehaviour
     }
 
     //static float size = 50;
-    const float scale = 1;
 
     public static void SpawnEnemy(int index)
     {
-        int playAreaSize = 400;
-        float size = playAreaSize;
+        float size = EnemyPositioningSystem.playAreaSize;
         Vector3 v = new Vector2(size*0.5f, size * 0.5f) + UnityEngine.Random.insideUnitCircle * size * 0.5f;
         v.z = v.y;
         v.y = 0.5f + UnityEngine.Random.value * 2;
+
+        float scale = 3;
 
         //Vector3 v = new Vector3(size * 0.5f, size * 0.5f, size * 0.5f) + UnityEngine.Random.insideUnitSphere * size;
 
@@ -108,12 +101,12 @@ public class EnemySpawner : MonoBehaviour
         _entityManager.SetComponentData(enemyEntity, new Rotation { Value = quaternion.identity });
         //_entityManager.SetComponentData(enemyEntity, new Heading{ Value = new float3(1,0,0)});
         _entityManager.SetComponentData(enemyEntity, new EnemyData() { Speed = 0, SwayAngle = 0, SwayDirection = 1 });
-        _entityManager.SetComponentData(enemyEntity, new Scale() { Value = new float3(scale, scale, scale) });
+        _entityManager.SetComponentData(enemyEntity, new Scale() { Value = new float3(1, 1, 1) });
         //_entityManager.SetComponentData(enemyEntity, new MitosisData(){ A = 0 });
-        _entityManager.SetComponentData(enemyEntity, new PositioningData() { Index = index, life = 1 });
+        _entityManager.SetComponentData(enemyEntity, new PositioningData() { Index = index });
         //_entityManager.SetComponentData(enemyEntity, _meshRenderer);
 
-        _entityManager.AddSharedComponentData(enemyEntity, _meshRenderer2);
+        _entityManager.AddSharedComponentData(enemyEntity, _meshRenderer);
 
 
         entityArray[total] = enemyEntity;
