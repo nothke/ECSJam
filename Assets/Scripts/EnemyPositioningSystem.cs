@@ -28,19 +28,17 @@ public class EnemyPositioningSystem : JobComponentSystem
     {
         private readonly NativeArray<int> gridIndexData;
         private readonly NativeArray<float3> entityPositions;
-        private Unity.Mathematics.Random rng;
 
         public PositionJob(NativeArray<int> gridData, NativeArray<float3> ent)
         {
             gridIndexData = gridData;
             entityPositions = ent;
-            rng = new Unity.Mathematics.Random();
         }
         
         public void Execute(ref PositioningData data, ref Position position)
         {
-            //data.PreviousPosition.x = position.Value.x;
-            //data.PreviousPosition.y = position.Value.z;
+            data.PreviousPosition.x = position.Value.x;
+            data.PreviousPosition.y = position.Value.z;
             
             int distance = 2 + (data.Index / 50) * 2;
 
@@ -51,13 +49,12 @@ public class EnemyPositioningSystem : JobComponentSystem
             position.Value.y = oldY;
             
             // apply avoidance force
-            position.Value.x += data.Force.x / 10000;
-            position.Value.z += data.Force.y / 10000;
+            position.Value.x += data.Force.x;
+            position.Value.z += data.Force.y;
             data.Force *= .8f;
             
             // force
             int outerIndex = CoordsToOuterIndex((int)position.Value.x, (int)position.Value.z);
-            var applyForce = false;
             if (outerIndex >= 0 && outerIndex < gridIndexData.Length)
             {
                 for (int i = outerIndex; i < outerIndex + numberOfForcesPerCell; i++)
@@ -66,16 +63,16 @@ public class EnemyPositioningSystem : JobComponentSystem
                     if (entityIndex != data.Index && entityIndex != 0)
                     {
                         var entPos = entityPositions[entityIndex];
-                        if (math.distance(entPos, position.Value) < 1)
+                        if (math.distance(entPos, position.Value) < 1f)
                         {
-                            applyForce = true;
+                            data.Force = new float2(position.Value.x - entPos.x, position.Value.z - entPos.z)/2;
                             break;
                         }
                         //data.Force += new float2(position.Value.x - entPos.x, position.Value.z - entPos.z);
                     }
                 }
 
-                if (applyForce) data.Force = new float2(rng.NextFloat(-.05f, .05f), rng.NextFloat(-.05f, .05f));
+                //if (applyForce) data.Force = new float2(.5f, .5f);
 
                 //data.Force = math.normalize(data.Force);
             }
@@ -99,21 +96,16 @@ public class EnemyPositioningSystem : JobComponentSystem
     {
         if (!entitiesLoaded)
         {
-            entities = EntityManager.GetAllEntities(Allocator.Persistent);
-            Debug.LogWarning(entities.Length);
-            entityPositions = new NativeArray<float3>(entities.Length, Allocator.Persistent);
+            entityPositions = new NativeArray<float3>(100000, Allocator.Persistent);
             entitiesLoaded = true;
         }
+        entities = EnemySpawner.entityArray;
         centerPos = GameObject.FindObjectOfType<InputComponent>().transform.position;
         globalOffset += .2f;
         
         // update avoidance data and calculate force;
-        for (int i = 0; i < entities.Length; i++)
+        for (int i = 0; i < EnemySpawner.total; i++)
         {
-            if (entities[i].Index < 2)
-            {
-                continue;
-            }
             PositioningData indexForcePrevPos = EntityManager.GetComponentData<PositioningData>(entities[i]);
             Position position = EntityManager.GetComponentData<Position>(entities[i]);
             entityPositions[i] = position.Value;
@@ -156,6 +148,7 @@ public class EnemyPositioningSystem : JobComponentSystem
         gridIndexData.Dispose();
         entities.Dispose();
         entityPositions.Dispose();
+        EnemySpawner.entityArray.Dispose();
         base.OnStopRunning();
     }
 

@@ -27,16 +27,16 @@ public class EnemySpawner : MonoBehaviour
 			typeof(Scale),
 			typeof(EnemyData),
 			typeof(PositioningData),
-			typeof(MitosisData),
+			//typeof(MitosisData),
 			//typeof(MeshInstanceRenderer),
 			typeof(LocalToWorld));
 	}
 
 
      void OnDisable()
-                 {
+     {
         entityArray.Dispose();
-                }
+     }
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
 	public static void InitializeWithScene()
@@ -51,7 +51,6 @@ public class EnemySpawner : MonoBehaviour
 
 	public static void SpawnEnemy(int index)
 	{
-        total++;
 
 		Entity enemyEntity = _entityManager.CreateEntity(_cellArchetype);
 		_entityManager.SetComponentData(enemyEntity, new Position{ Value = new float3(UnityEngine.Random.value * 50, .5f + UnityEngine.Random.value*2, UnityEngine.Random.value * 50)});
@@ -59,11 +58,15 @@ public class EnemySpawner : MonoBehaviour
 		//_entityManager.SetComponentData(enemyEntity, new Heading{ Value = new float3(1,0,0)});
 		_entityManager.SetComponentData(enemyEntity, new EnemyData(){ Speed = 0, SwayAngle = 0, SwayDirection = 1});
 		_entityManager.SetComponentData(enemyEntity, new PositioningData(){ Index = index });
-		_entityManager.SetComponentData(enemyEntity, new MitosisData(){ A = 0 });
+		//_entityManager.SetComponentData(enemyEntity, new MitosisData(){ A = 0 });
 		_entityManager.SetComponentData(enemyEntity, new Scale() { Value = new float3(1,1,1)});
 		//_entityManager.SetComponentData(enemyEntity, _meshRenderer);
 		
 		_entityManager.AddSharedComponentData(enemyEntity, _meshRenderer);
+
+		entityArray[total] = enemyEntity;
+		total++;
+		
 				
 		//Object.Instantiate(Enemy, new Vector3(Random.value * 50 - 25, Enemy.transform.position.y, Random.value * 50 - 25), Enemy.transform.rotation);
 	}
@@ -80,7 +83,6 @@ public class EnemySpawner : MonoBehaviour
     
     public static void SpawnEnemyAtPosition(Vector3 pos)
     {
-        total++;
         int index = total;
 
         Entity enemyEntity = _entityManager.CreateEntity(_cellArchetype);
@@ -89,12 +91,17 @@ public class EnemySpawner : MonoBehaviour
         //_entityManager.SetComponentData(enemyEntity, new Heading{ Value = new float3(1,0,0)});
         _entityManager.SetComponentData(enemyEntity, new EnemyData() { Speed = 0, SwayAngle = 0, SwayDirection = 1 });
 	    _entityManager.SetComponentData(enemyEntity, new Scale() { Value = new float3(1,1,1)});
+	    //_entityManager.SetComponentData(enemyEntity, new MitosisData(){ A = 0 });
         _entityManager.SetComponentData(enemyEntity, new PositioningData() { Index = index });
         //_entityManager.SetComponentData(enemyEntity, _meshRenderer);
-
+	    
         _entityManager.AddSharedComponentData(enemyEntity, _meshRenderer);
 
-        Debug.Log("Spawned " + index);
+	    
+	    entityArray[total] = enemyEntity;
+	    total++;
+
+        //Debug.Log("Spawned " + index);
     }
 
     public static void SpawnEnemy()

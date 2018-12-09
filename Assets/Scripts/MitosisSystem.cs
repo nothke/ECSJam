@@ -58,7 +58,11 @@ public class MitosisSystem : JobComponentSystem
         }
         return job.Schedule(this, inputDeps);
     }
-    
+
+    protected override void OnStopRunning()
+    {
+        base.OnStopRunning();
+    }
 }
 
 public struct MitosisData : IComponentData
