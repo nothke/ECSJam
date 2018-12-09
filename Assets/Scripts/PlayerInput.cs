@@ -20,8 +20,8 @@ public class PlayerInput : MonoBehaviour
         
         horizontalAxis = Input.GetAxis("Horizontal");
         verticalAxis = Input.GetAxis("Vertical");
-        rHorizontalAxis = Input.GetAxis("rHorizontal");
-        rVerticalAxis = Input.GetAxis("rVertical");
+        rHorizontalAxis = Input.GetAxis("RHorizontal");
+        rVerticalAxis = Input.GetAxis("RVertical");
 
         if (horizontalAxis != 0 || verticalAxis != 0) {
             //Do
