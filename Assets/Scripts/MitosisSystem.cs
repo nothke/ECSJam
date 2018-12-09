@@ -40,12 +40,14 @@ public class MitosisSystem : JobComponentSystem
         if (currentCooldown <= 0)
         {
             currentCooldown = totalCooldown;
-            NativeArray<Entity> allEntities = EntityManager.GetAllEntities(Allocator.TempJob);
-            int step = (int)EnemySpawner.entityArray.Length / 500;
-            for (int i = 0; i < EnemySpawner.entityArray.Length; i += step)
+            //NativeArray<Entity> allEntities = EntityManager.GetAllEntities(Allocator.TempJob);
+            int step = (int)EnemySpawner.total / 500;
+            for (int i = 0; i < EnemySpawner.total; i += step)
             {
                 //Entity e = EntityManager.CreateEntity(EnemySpawner._cellArchetype);
-                EnemySpawner.SpawnEnemyAtPosition(EntityManager.GetComponentData<Position>(allEntities[i]).Value +
+
+                Debug.LogError("there is " + EnemySpawner.total + " and index is " + i);
+                EnemySpawner.SpawnEnemyAtPosition(EntityManager.GetComponentData<Position>(EnemySpawner.entityArray[i]).Value +
                                                   EnemySpawner.ReturnRandomPositionOffset(1f));
                 //if (EntityManager.HasComponent<MitosisData>(e))
                 //{

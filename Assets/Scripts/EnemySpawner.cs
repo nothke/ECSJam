@@ -14,7 +14,7 @@ public class EnemySpawner : MonoBehaviour
 	public static EntityArchetype _cellArchetype;
     public static NativeArray<Entity> entityArray;
 
-    static int total;
+    public static int total;
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
 	public static void Initialize()
@@ -51,6 +51,8 @@ public class EnemySpawner : MonoBehaviour
 
 	public static void SpawnEnemy(int index)
 	{
+        total++;
+
 		Entity enemyEntity = _entityManager.CreateEntity(_cellArchetype);
 		_entityManager.SetComponentData(enemyEntity, new Position{ Value = new float3(UnityEngine.Random.value * 50, .5f + UnityEngine.Random.value*2, UnityEngine.Random.value * 50)});
 		_entityManager.SetComponentData(enemyEntity, new Rotation{ Value = quaternion.identity });
