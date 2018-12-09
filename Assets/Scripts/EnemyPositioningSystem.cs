@@ -9,6 +9,7 @@ using Unity.Transforms;
 using Unity.Jobs;
 using Unity.Mathematics;
 using Unity.Transforms;
+using Random = UnityEngine.Random;
 
 public class EnemyPositioningSystem : JobComponentSystem
 {
@@ -36,19 +37,21 @@ public class EnemyPositioningSystem : JobComponentSystem
         
         public void Execute(ref PositioningData data, ref Position position)
         {
+            data.PreviousPosition.x = position.Value.x;
+            data.PreviousPosition.y = position.Value.z;
             
             int distance = 2 + (data.Index / 50) * 2;
 
             float circleOffset = globalOffset * (distance % 4 == 0 ? -1 : 1);
             var dir = Quaternion.Euler(0, data.Index * 7.2f + circleOffset, 0) * direction;
-            var oldPos = position.Value;
-            position.Value = math.lerp(position.Value, centerPos + new float3(dir.x, dir.y, dir.z) * distance, 0.01f);
-            position.Value.y = oldPos.y;
+            var oldY = position.Value.y;
+            position.Value = math.lerp(position.Value, centerPos + new float3(dir.x, dir.y, dir.z) * distance, 0.1f);
+            position.Value.y = oldY;
             
             // apply avoidance force
-            position.Value.x += data.Force.x / 100;
-            position.Value.z += data.Force.y / 100;
-            data.Force *= .5f;
+            position.Value.x += data.Force.x;
+            position.Value.z += data.Force.y;
+            data.Force *= .8f;
             
             // force
             int outerIndex = CoordsToOuterIndex((int)position.Value.x, (int)position.Value.z);
@@ -60,13 +63,20 @@ public class EnemyPositioningSystem : JobComponentSystem
                     if (entityIndex != data.Index && entityIndex != 0)
                     {
                         var entPos = entityPositions[entityIndex];
-                        data.Force += new float2(position.Value.x - entPos.x, position.Value.z - entPos.z);
+                        if (math.distance(entPos, position.Value) < 1f)
+                        {
+                            data.Force = new float2(position.Value.x - entPos.x, position.Value.z - entPos.z)/2;
+                            break;
+                        }
+                        //data.Force += new float2(position.Value.x - entPos.x, position.Value.z - entPos.z);
                     }
                 }
+
+                //if (applyForce) data.Force = new float2(.5f, .5f);
+
+                //data.Force = math.normalize(data.Force);
             }
         }
-        
-        
     }
 
     private static int CoordsToOuterIndex(int x, int z)
@@ -86,33 +96,43 @@ public class EnemyPositioningSystem : JobComponentSystem
     {
         if (!entitiesLoaded)
         {
-            entities = EntityManager.GetAllEntities(Allocator.Persistent);
-            entityPositions = new NativeArray<float3>(entities.Length, Allocator.Persistent);
+            entityPositions = new NativeArray<float3>(100000, Allocator.Persistent);
             entitiesLoaded = true;
         }
+        entities = EnemySpawner.entityArray;
         centerPos = GameObject.FindObjectOfType<InputComponent>().transform.position;
         globalOffset += .2f;
         
         // update avoidance data and calculate force;
-        for (int i = 0; i < entities.Length; i++)
+        for (int i = 0; i < EnemySpawner.total; i++)
         {
-            if (entities[i].Index < 2)
-            {
-                continue;
-            }
-            PositioningData indexAndForce = EntityManager.GetComponentData<PositioningData>(entities[i]);
+            PositioningData indexForcePrevPos = EntityManager.GetComponentData<PositioningData>(entities[i]);
             Position position = EntityManager.GetComponentData<Position>(entities[i]);
             entityPositions[i] = position.Value;
-        
-        
-            int outerIndex = CoordsToOuterIndex((int)position.Value.x, (int)position.Value.z);
+
+            // remove old position from grid
+            int outerIndex = CoordsToOuterIndex((int) indexForcePrevPos.PreviousPosition.x,
+                (int) indexForcePrevPos.PreviousPosition.y);
+            if (outerIndex >= 0 && outerIndex < gridIndexData.Length)
+            {
+                for (int innerIndex = outerIndex; innerIndex < outerIndex + numberOfForcesPerCell; innerIndex++)
+                {
+                    if (gridIndexData[innerIndex] == indexForcePrevPos.Index)
+                    {
+                        gridIndexData[innerIndex] = 0;
+                    }
+                }
+            }
+            
+            // add new position to grid
+            outerIndex = CoordsToOuterIndex((int)position.Value.x, (int)position.Value.z);
             if (outerIndex >= 0 && outerIndex < gridIndexData.Length)
             {
                 for (int innerIndex = outerIndex; innerIndex < outerIndex + numberOfForcesPerCell; innerIndex++)
                 {
                     if (gridIndexData[innerIndex] == 0)
                     {
-                        gridIndexData[innerIndex] = indexAndForce.Index;
+                        gridIndexData[innerIndex] = indexForcePrevPos.Index;
                     }
                 }
             }
@@ -128,6 +148,7 @@ public class EnemyPositioningSystem : JobComponentSystem
         gridIndexData.Dispose();
         entities.Dispose();
         entityPositions.Dispose();
+        EnemySpawner.entityArray.Dispose();
         base.OnStopRunning();
     }
 
@@ -145,4 +166,5 @@ public struct PositioningData : IComponentData
 {
     public int Index;
     public float2 Force;
+    public float2 PreviousPosition;
 }
