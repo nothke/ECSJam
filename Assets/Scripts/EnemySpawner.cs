@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Rendering;
@@ -10,6 +11,7 @@ public class EnemySpawner : MonoBehaviour
 	public static EntityManager _entityManager;
 	private static MeshInstanceRenderer _meshRenderer;
 	public static EntityArchetype _cellArchetype;
+    public static NativeArray<Entity> entityArray;
 
     static int total;
 
@@ -17,19 +19,25 @@ public class EnemySpawner : MonoBehaviour
 	public static void Initialize()
 	{
 		_entityManager = World.Active.GetOrCreateManager<EntityManager>();
-
+        entityArray = new NativeArray<Entity>(100000,Allocator.Persistent);
 		_cellArchetype = _entityManager.CreateArchetype(
 			typeof(Position),
 			typeof(Rotation),
 			typeof(Scale),
 			typeof(EnemyData),
 			typeof(PositioningData),
-			//typeof(MitosisData),
+			typeof(MitosisData),
 			//typeof(MeshInstanceRenderer),
 			typeof(LocalToWorld));
 	}
 
-	[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
+
+    private void OnDisable()
+    {
+        entityArray.Dispose();
+    }
+
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
 	public static void InitializeWithScene()
 	{
 		_meshRenderer = GameObject.FindObjectOfType<MeshInstanceRendererComponent>().Value;
@@ -48,7 +56,7 @@ public class EnemySpawner : MonoBehaviour
 		//_entityManager.SetComponentData(enemyEntity, new Heading{ Value = new float3(1,0,0)});
 		_entityManager.SetComponentData(enemyEntity, new EnemyData(){ Speed = 0, SwayAngle = 0, SwayDirection = 1});
 		_entityManager.SetComponentData(enemyEntity, new PositioningData(){ Index = index });
-		//_entityManager.SetComponentData(enemyEntity, new MitosisData(){ A = 0 });
+		_entityManager.SetComponentData(enemyEntity, new MitosisData(){ A = 0 });
 		_entityManager.SetComponentData(enemyEntity, new Scale() { Value = new float3(1,1,1)});
 		//_entityManager.SetComponentData(enemyEntity, _meshRenderer);
 		
