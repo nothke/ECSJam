@@ -38,7 +38,7 @@ public class ScopePanner : MonoBehaviour
     float stateTime = 1;
 
     float time = 0.1f;
-    float mult = 10;
+    float mult = 3;
 
     public float focusMult = 10;
 
