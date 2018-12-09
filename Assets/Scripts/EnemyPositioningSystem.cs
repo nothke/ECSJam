@@ -28,17 +28,19 @@ public class EnemyPositioningSystem : JobComponentSystem
     {
         private readonly NativeArray<int> gridIndexData;
         private readonly NativeArray<float3> entityPositions;
+        private Unity.Mathematics.Random rng;
 
         public PositionJob(NativeArray<int> gridData, NativeArray<float3> ent)
         {
             gridIndexData = gridData;
             entityPositions = ent;
+            rng = new Unity.Mathematics.Random();
         }
         
         public void Execute(ref PositioningData data, ref Position position)
         {
-            data.PreviousPosition.x = position.Value.x;
-            data.PreviousPosition.y = position.Value.z;
+            //data.PreviousPosition.x = position.Value.x;
+            //data.PreviousPosition.y = position.Value.z;
             
             int distance = 2 + (data.Index / 50) * 2;
 
@@ -49,9 +51,9 @@ public class EnemyPositioningSystem : JobComponentSystem
             position.Value.y = oldY;
             
             // apply avoidance force
-            position.Value.x += data.Force.x / 100000;
-            position.Value.z += data.Force.y / 100000;
-            data.Force *= .99f;
+            position.Value.x += data.Force.x / 10000;
+            position.Value.z += data.Force.y / 10000;
+            data.Force *= .8f;
             
             // force
             int outerIndex = CoordsToOuterIndex((int)position.Value.x, (int)position.Value.z);
@@ -73,7 +75,7 @@ public class EnemyPositioningSystem : JobComponentSystem
                     }
                 }
 
-                if (applyForce) data.Force = new float2(Random.value / 10 - .05f, Random.value / 10 - .05f);
+                if (applyForce) data.Force = new float2(rng.NextFloat(-.05f, .05f), rng.NextFloat(-.05f, .05f));
 
                 //data.Force = math.normalize(data.Force);
             }
@@ -98,6 +100,7 @@ public class EnemyPositioningSystem : JobComponentSystem
         if (!entitiesLoaded)
         {
             entities = EntityManager.GetAllEntities(Allocator.Persistent);
+            Debug.LogWarning(entities.Length);
             entityPositions = new NativeArray<float3>(entities.Length, Allocator.Persistent);
             entitiesLoaded = true;
         }
