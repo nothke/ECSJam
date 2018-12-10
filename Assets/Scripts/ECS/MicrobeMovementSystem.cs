@@ -26,9 +26,9 @@ public class MicrobeMovementSystem : JobComponentSystem
     private NativeArray<float3> entityPositions;
 
     [BurstCompile(Accuracy = Accuracy.Low)]
-    private struct PositionJob : IJobProcessComponentData<PositioningData, Position> // Scale
+    private struct PositionJob : IJobProcessComponentData<MovementData, Position> // Scale
     {
-        
+
         private readonly NativeArray<int> gridIndexData;
         private readonly NativeArray<float3> entityPositions;
 
@@ -38,9 +38,9 @@ public class MicrobeMovementSystem : JobComponentSystem
             entityPositions = ent;
         }
 
-        public void Execute(ref PositioningData data, ref Position position) // , ref Scale scale
+        public void Execute(ref MovementData data, ref Position position) // , ref Scale scale
         {
-            
+
             data.PreviousPosition.x = position.Value.x;
             data.PreviousPosition.y = position.Value.z;
 
@@ -66,19 +66,18 @@ public class MicrobeMovementSystem : JobComponentSystem
             float zin = playAreaSize * 0.5f - position.Value.z;
 
             // Pull towards center
-            
+
             data.Velocity += new float2(
                 xin * 0.0005f,
                 zin * 0.0005f);
 
-            
             // Noise
             var noiz = -0.5f + noise.cellular(new float2(xin * 0.01f, zin * 0.01f));
             var noiz2 = -0.5f + noise.snoise(new float2(xin * 0.1f, zin * 0.1f));
             data.Velocity += noiz * 0.2f + noiz2 * 0.2f;
 
             // Collision
-            
+
             int numberOfForcesPerCell = 10;
             int outerIndex = CoordsToOuterIndex((int)position.Value.x, (int)position.Value.z);
             if (outerIndex >= 0 && outerIndex < gridIndexData.Length)
@@ -90,10 +89,17 @@ public class MicrobeMovementSystem : JobComponentSystem
                     if (entityIndex != data.Index && entityIndex != 0)
                     {
                         var entPos = entityPositions[entityIndex];
-                        if (math.distance(entPos, position.Value) < 3f)
+
+                        var diff = new float2(
+                            position.Value.x - entPos.x,
+                            position.Value.z - entPos.z);
+
+                        var sqrDistance = math.lengthsq(diff);
+
+                        if (sqrDistance < 9f)
                         {
                             //data.life--;
-                            data.Velocity = new float2(position.Value.x - entPos.x, position.Value.z - entPos.z) / 2;
+                            data.Velocity += -diff;
                             break;
                         }
                         //data.Force += new float2(position.Value.x - entPos.x, position.Value.z - entPos.z);
@@ -104,7 +110,7 @@ public class MicrobeMovementSystem : JobComponentSystem
 
                 //data.Force = math.normalize(data.Force);
             }
-            
+
             // Update positions
             position.Value.x += data.Velocity.x;
             position.Value.z += data.Velocity.y;
@@ -112,7 +118,7 @@ public class MicrobeMovementSystem : JobComponentSystem
         }
 
     }
-
+    
     private static int CoordsToOuterIndex(int x, int z)
     {
         int numberOfForcesPerCell = 10;
@@ -136,17 +142,18 @@ public class MicrobeMovementSystem : JobComponentSystem
         // update avoidance data and calculate force;
 
         // THIS MAKES THE SYSTEM SLOW!!!
-
         
         for (int i = 0; i < MicrobeSpawner.total; i++)
         {
-            PositioningData indexForcePrevPos = EntityManager.GetComponentData<PositioningData>(entities[i]);
+            MovementData indexForcePrevPos = EntityManager.GetComponentData<MovementData>(entities[i]);
             Position position = EntityManager.GetComponentData<Position>(entities[i]);
             entityPositions[i] = position.Value;
 
             // remove old position from grid
-            int outerIndex = CoordsToOuterIndex((int)indexForcePrevPos.PreviousPosition.x,
+            int outerIndex = CoordsToOuterIndex(
+                (int)indexForcePrevPos.PreviousPosition.x,
                 (int)indexForcePrevPos.PreviousPosition.y);
+
             if (outerIndex >= 0 && outerIndex < gridIndexData.Length)
             {
                 for (int innerIndex = outerIndex; innerIndex < outerIndex + numberOfForcesPerCell; innerIndex++)
@@ -198,7 +205,7 @@ public class MicrobeMovementSystem : JobComponentSystem
 }
 
 [BurstCompile]
-public struct PositioningData : IComponentData
+public struct MovementData : IComponentData
 {
     public int Index;
     public float2 Velocity;

@@ -40,7 +40,7 @@ public class MicrobeSpawner
             typeof(Rotation),
             typeof(Scale),
             typeof(SwayData),
-            typeof(PositioningData),
+            typeof(MovementData),
             //typeof(MitosisData),
             //typeof(MeshInstanceRenderer),
             typeof(LocalToWorld));
@@ -82,7 +82,7 @@ public class MicrobeSpawner
         _entityManager.SetComponentData(microbeEntity, new Position { Value = position });
         _entityManager.SetComponentData(microbeEntity, new Rotation { Value = quaternion.identity });
         _entityManager.SetComponentData(microbeEntity, new SwayData() { Speed = 0, SwayAngle = 0, SwayDirection = 1 });
-        _entityManager.SetComponentData(microbeEntity, new PositioningData() { Index = index, life = 1 });
+        _entityManager.SetComponentData(microbeEntity, new MovementData() { Index = index, life = 1 });
         _entityManager.SetComponentData(microbeEntity, new Scale() { Value = new float3(scale, scale, scale) });
 
         MeshInstanceRenderer renderer;

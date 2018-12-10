@@ -15,11 +15,11 @@ public class MitosisSystem : JobComponentSystem
     private static float currentCooldown = 10;
     
     
-    private struct PositionJob : IJobProcessComponentData<MitosisData, Scale, PositioningData>
+    private struct PositionJob : IJobProcessComponentData<MitosisData, Scale, MovementData>
     {
         public float CDPercentage;
 
-        public void Execute(ref MitosisData data, ref Scale scale, ref PositioningData posData)
+        public void Execute(ref MitosisData data, ref Scale scale, ref MovementData posData)
         {
             scale.Value.x = .5f + CDPercentage / 2;
             scale.Value.z = 1 + (1 - CDPercentage);
