@@ -52,9 +52,9 @@ public class EnemyPositioningSystem : JobComponentSystem
             position.Value.y = oldY;*/
 
             // apply avoidance force
-            position.Value.x += data.Force.x;
-            position.Value.z += data.Force.y;
-            data.Force *= .8f;
+            position.Value.x += data.Velocity.x;
+            position.Value.z += data.Velocity.y;
+            data.Velocity *= .8f;
 
             //scale.Value.x = 1;
 
@@ -74,13 +74,13 @@ public class EnemyPositioningSystem : JobComponentSystem
             float zin = playAreaSize / 2 - position.Value.z;
 
             // SABIJAC
-            data.Force += new float2(
+            data.Velocity += new float2(
                 xin * 0.0005f,
                 zin * 0.0005f);
 
             var noiz = -0.5f + noise.cellular(new float2(xin * 0.01f, zin * 0.01f));
             var noiz2 = -0.5f + noise.snoise(new float2(xin * 0.1f, zin * 0.1f));
-            data.Force += noiz * 0.2f + noiz2*0.2f;
+            data.Velocity += noiz * 0.2f + noiz2*0.2f;
 
             int numberOfForcesPerCell = 10;
 
@@ -98,7 +98,7 @@ public class EnemyPositioningSystem : JobComponentSystem
                         if (math.distance(entPos, position.Value) < 3f)
                         {
                             //data.life--;
-                            data.Force = new float2(position.Value.x - entPos.x, position.Value.z - entPos.z) / 2;
+                            data.Velocity = new float2(position.Value.x - entPos.x, position.Value.z - entPos.z) / 2;
                             break;
                         }
                         //data.Force += new float2(position.Value.x - entPos.x, position.Value.z - entPos.z);
@@ -196,7 +196,7 @@ public class EnemyPositioningSystem : JobComponentSystem
 public struct PositioningData : IComponentData
 {
     public int Index;
-    public float2 Force;
+    public float2 Velocity;
     public float2 PreviousPosition;
     public int life;
 }
