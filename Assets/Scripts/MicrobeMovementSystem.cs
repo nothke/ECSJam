@@ -12,7 +12,7 @@ using Unity.Transforms;
 using Random = UnityEngine.Random;
 using Unity.Burst;
 
-public class EnemyPositioningSystem : JobComponentSystem
+public class MicrobeMovementSystem : JobComponentSystem
 {
     //public int playAreaSize = 256;
     private int numberOfForcesPerCell = 5;
