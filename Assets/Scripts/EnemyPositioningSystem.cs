@@ -25,7 +25,7 @@ public class EnemyPositioningSystem : JobComponentSystem
     private NativeArray<Entity> entities;
     private NativeArray<float3> entityPositions;
 
-    [BurstCompile]
+    [BurstCompile(Accuracy = Accuracy.Low)]
     private struct PositionJob : IJobProcessComponentData<PositioningData, Position> // Scale
     {
         private readonly NativeArray<int> gridIndexData;
