@@ -16,8 +16,11 @@ public class EnemySpawner : MonoBehaviour
     public static EntityArchetype _cellArchetype;
     public static NativeArray<Entity> entityArray;
 
-    public static int total;
+    //static float size = 50;
+    const float scale = 1;
 
+    public static int total;
+    
     public enum EntityType { Bacteria, Antibody };
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
@@ -60,9 +63,6 @@ public class EnemySpawner : MonoBehaviour
         }
     }
 
-    //static float size = 50;
-    const float scale = 1;
-
     public static void SpawnEntity(Vector3 position, EntityType type)
     {
         int index = total;
@@ -72,7 +72,6 @@ public class EnemySpawner : MonoBehaviour
 
     public static void SpawnEntity(int index, Vector3 position, EntityType type)
     {
-
         Entity enemyEntity = _entityManager.CreateEntity(_cellArchetype);
         _entityManager.SetComponentData(enemyEntity, new Position { Value = position });
         _entityManager.SetComponentData(enemyEntity, new Rotation { Value = quaternion.identity });
@@ -95,56 +94,10 @@ public class EnemySpawner : MonoBehaviour
 
         //_entityManager.SetComponentData(enemyEntity, new Heading{ Value = new float3(1,0,0)});
         //_entityManager.SetComponentData(enemyEntity, new MitosisData(){ A = 0 });
-        //_entityManager.SetComponentData(enemyEntity, _meshRenderer);
-
 
         entityArray[total] = enemyEntity;
         total++;
-
-        //Object.Instantiate(Enemy, new Vector3(Random.value * 50 - 25, Enemy.transform.position.y, Random.value * 50 - 25), Enemy.transform.rotation);
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            //Object.Instantiate(Enemy, new Vector3(Random.value * 50 - 25, Enemy.transform.position.y, Random.value * 50 - 25), Enemy.transform.rotation);
-        }
-    }
-
-    // Nothketov dirty za testing
-
-    /*
-public static void SpawnEnemyAtPosition(Vector3 pos)
-{
-    int index = total;
-
-    Entity enemyEntity = _entityManager.CreateEntity(_cellArchetype);
-    _entityManager.SetComponentData(enemyEntity, new Position { Value = new float3(pos.x, pos.y, pos.z) });
-    _entityManager.SetComponentData(enemyEntity, new Rotation { Value = quaternion.identity });
-    _entityManager.SetComponentData(enemyEntity, new EnemyData() { Speed = 0, SwayAngle = 0, SwayDirection = 1 });
-    _entityManager.SetComponentData(enemyEntity, new Scale() { Value = new float3(scale, scale, scale) });
-    _entityManager.SetComponentData(enemyEntity, new PositioningData() { Index = index, life = 1 });
-
-    _entityManager.AddSharedComponentData(enemyEntity, _meshRenderer2);
-
-    //_entityManager.SetComponentData(enemyEntity, new MitosisData(){ A = 0 });
-    //_entityManager.SetComponentData(enemyEntity, _meshRenderer);
-    //_entityManager.SetComponentData(enemyEntity, new Heading{ Value = new float3(1,0,0)});
-
-    entityArray[total] = enemyEntity;
-    total++;
-
-    //Debug.Log("Spawned " + index);
-}
-*/
-
-    /*
-public static void SpawnEntity()
-{
-    SpawnEntity(UnityEngine.Random.Range(0, int.MaxValue));
-}*/
 
     #region Utils
 
