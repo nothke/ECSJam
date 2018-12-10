@@ -26,7 +26,6 @@ public class MitosisSystem : JobComponentSystem
             
             //commandBuffer.CreateEntity(EnemySpawner._cellArchetype);
         }
-        
     }
 
     protected override JobHandle OnUpdate(JobHandle inputDeps)
@@ -47,8 +46,10 @@ public class MitosisSystem : JobComponentSystem
                 //Entity e = EntityManager.CreateEntity(EnemySpawner._cellArchetype);
 
                 Debug.LogError("there is " + EnemySpawner.total + " and index is " + i);
-                EnemySpawner.SpawnEnemyAtPosition(EntityManager.GetComponentData<Position>(EnemySpawner.entityArray[i]).Value +
-                                                  EnemySpawner.ReturnRandomPositionOffset(1f));
+                EnemySpawner.SpawnEntity(
+                    EntityManager.GetComponentData<Position>(EnemySpawner.entityArray[i]).Value +
+                    EnemySpawner.ReturnRandomPositionOffset(1f), EnemySpawner.EntityType.Antibody);
+
                 //if (EntityManager.HasComponent<MitosisData>(e))
                 //{
                 //    EntityManager.SetComponentData(e, new Position() {Value = EntityManager.GetComponentData<Position>(allEntities[i]).Value});

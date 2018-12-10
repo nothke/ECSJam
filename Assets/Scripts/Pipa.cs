@@ -25,11 +25,10 @@ public class Pipa : MonoBehaviour
 
         if (Input.GetButton("Fire2") || Input.GetMouseButton(0))
         {
-            EnemySpawner.SpawnEnemyAtPosition(transform.position);
-            EnemySpawner.SpawnEnemyAtPosition(transform.position);
-            EnemySpawner.SpawnEnemyAtPosition(transform.position);
-            EnemySpawner.SpawnEnemyAtPosition(transform.position);
-            EnemySpawner.SpawnEnemyAtPosition(transform.position);
+            for (int i = 0; i < 7; i++)
+            {
+                EnemySpawner.SpawnEntity(transform.position, EnemySpawner.EntityType.Antibody);
+            }
         }
     }
 }
