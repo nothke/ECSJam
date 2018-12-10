@@ -9,6 +9,8 @@ using UnityEngine;
 
 public class MicrobeSpawner
 {
+    const int spawnCount = 20000;
+
     static MeshInstanceRenderer bacteriaRenderer;
     static MeshInstanceRenderer antibodyRenderer;
 
@@ -37,7 +39,7 @@ public class MicrobeSpawner
             typeof(Position),
             typeof(Rotation),
             typeof(Scale),
-            typeof(EnemyData),
+            typeof(SwayData),
             typeof(PositioningData),
             //typeof(MitosisData),
             //typeof(MeshInstanceRenderer),
@@ -54,7 +56,7 @@ public class MicrobeSpawner
         int playAreaSize = 400;
         float size = playAreaSize;
 
-        for (int i = 0; i < 10000; i++)
+        for (int i = 0; i < spawnCount; i++)
         {
             Vector3 pos = new Vector2(size * 0.5f, size * 0.5f) + UnityEngine.Random.insideUnitCircle * size * 0.5f;
             pos.z = pos.y;
@@ -79,7 +81,7 @@ public class MicrobeSpawner
         Entity microbeEntity = _entityManager.CreateEntity(_cellArchetype);
         _entityManager.SetComponentData(microbeEntity, new Position { Value = position });
         _entityManager.SetComponentData(microbeEntity, new Rotation { Value = quaternion.identity });
-        _entityManager.SetComponentData(microbeEntity, new EnemyData() { Speed = 0, SwayAngle = 0, SwayDirection = 1 });
+        _entityManager.SetComponentData(microbeEntity, new SwayData() { Speed = 0, SwayAngle = 0, SwayDirection = 1 });
         _entityManager.SetComponentData(microbeEntity, new PositioningData() { Index = index, life = 1 });
         _entityManager.SetComponentData(microbeEntity, new Scale() { Value = new float3(scale, scale, scale) });
 

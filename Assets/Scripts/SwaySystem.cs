@@ -7,17 +7,17 @@ using Unity.Jobs;
 using Unity.Mathematics;
 using Unity.Transforms;
 
-public class EnemySwaySystem : JobComponentSystem
+public class SwaySystem : JobComponentSystem
 {
 
     private static float swaySpeed = 2f;
     private static float swayLimit = .6f; //rads (rad ~ 57 deg)
     
-    private struct SwayJob : IJobProcessComponentData<EnemyData, Rotation>
+    private struct SwayJob : IJobProcessComponentData<SwayData, Rotation>
     {
         public float DeltaTime;
 
-        public void Execute(ref EnemyData data, ref Rotation rotation)
+        public void Execute(ref SwayData data, ref Rotation rotation)
         {
             if ((data.SwayAngle >= swayLimit && data.SwayDirection > 0) || (data.SwayAngle <= -swayLimit && data.SwayDirection < 0) )
             {
@@ -32,8 +32,6 @@ public class EnemySwaySystem : JobComponentSystem
 
     protected override JobHandle OnUpdate(JobHandle inputDeps)
     {
-        Debug.Log("Blah");
-
         var job = new SwayJob
         {
             DeltaTime = Time.deltaTime

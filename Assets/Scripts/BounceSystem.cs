@@ -6,16 +6,16 @@ using Unity.Transforms;
 using Unity.Jobs;
 using Unity.Transforms;
 
-public class EnemyBounceSystem : JobComponentSystem
+public class BounceSystem : JobComponentSystem
 {
 
     private static float gravity = 1;
     
-    private struct BounceJob : IJobProcessComponentData<EnemyData, Position>
+    private struct BounceJob : IJobProcessComponentData<SwayData, Position>
     {
         public float DeltaTime;
 
-        public void Execute(ref EnemyData data, ref Position position)
+        public void Execute(ref SwayData data, ref Position position)
         {
             position.Value.y += data.Speed * DeltaTime;
             data.Speed -= gravity;

@@ -137,6 +137,7 @@ public class MicrobeMovementSystem : JobComponentSystem
 
         // THIS MAKES THE SYSTEM SLOW!!!
 
+        
         for (int i = 0; i < MicrobeSpawner.total; i++)
         {
             PositioningData indexForcePrevPos = EntityManager.GetComponentData<PositioningData>(entities[i]);
