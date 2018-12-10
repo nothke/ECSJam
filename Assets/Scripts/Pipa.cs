@@ -27,7 +27,7 @@ public class Pipa : MonoBehaviour
         {
             for (int i = 0; i < 7; i++)
             {
-                EnemySpawner.SpawnEntity(transform.position, EnemySpawner.EntityType.Antibody);
+                MicrobeSpawner.SpawnEntity(transform.position, MicrobeSpawner.EntityType.Antibody);
             }
         }
     }

@@ -135,12 +135,12 @@ public class EnemyPositioningSystem : JobComponentSystem
             int playAreaSize = 400;
             gridIndexData = new NativeArray<int>(playAreaSize * playAreaSize * numberOfForcesPerCell, Allocator.Persistent);
         }
-        entities = EnemySpawner.entityArray;
+        entities = MicrobeSpawner.entityArray;
         centerPos = GameObject.FindObjectOfType<InputComponent>().transform.position;
         globalOffset += .2f;
 
         // update avoidance data and calculate force;
-        for (int i = 0; i < EnemySpawner.total; i++)
+        for (int i = 0; i < MicrobeSpawner.total; i++)
         {
             PositioningData indexForcePrevPos = EntityManager.GetComponentData<PositioningData>(entities[i]);
             Position position = EntityManager.GetComponentData<Position>(entities[i]);

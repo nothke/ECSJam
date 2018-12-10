@@ -7,7 +7,7 @@ using Unity.Transforms;
 using System;
 using UnityEngine;
 
-public class EnemySpawner : MonoBehaviour
+public class MicrobeSpawner// : MonoBehaviour
 {
     static MeshInstanceRenderer bacteriaRenderer;
     static MeshInstanceRenderer antibodyRenderer;
@@ -26,6 +26,8 @@ public class EnemySpawner : MonoBehaviour
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     public static void Initialize()
     {
+        Debug.Log("Initializing MicrobeSpawner");
+
         // Create the archetype
         _entityManager = World.Active.GetOrCreateManager<EntityManager>();
         entityArray = new NativeArray<Entity>(100000, Allocator.Persistent);
@@ -59,7 +61,7 @@ public class EnemySpawner : MonoBehaviour
             // in sphere
             //Vector3 v = new Vector3(size * 0.5f, size * 0.5f, size * 0.5f) + UnityEngine.Random.insideUnitSphere * size;
 
-            SpawnEntity(i, pos, EntityType.Bacteria);
+            SpawnMicrobe(i, pos, EntityType.Bacteria);
         }
     }
 
@@ -67,17 +69,17 @@ public class EnemySpawner : MonoBehaviour
     {
         int index = total;
 
-        SpawnEntity(index, position, type);
+        SpawnMicrobe(index, position, type);
     }
 
-    public static void SpawnEntity(int index, Vector3 position, EntityType type)
+    public static void SpawnMicrobe(int index, Vector3 position, EntityType type)
     {
-        Entity enemyEntity = _entityManager.CreateEntity(_cellArchetype);
-        _entityManager.SetComponentData(enemyEntity, new Position { Value = position });
-        _entityManager.SetComponentData(enemyEntity, new Rotation { Value = quaternion.identity });
-        _entityManager.SetComponentData(enemyEntity, new EnemyData() { Speed = 0, SwayAngle = 0, SwayDirection = 1 });
-        _entityManager.SetComponentData(enemyEntity, new PositioningData() { Index = index, life = 1 });
-        _entityManager.SetComponentData(enemyEntity, new Scale() { Value = new float3(scale, scale, scale) });
+        Entity microbeEntity = _entityManager.CreateEntity(_cellArchetype);
+        _entityManager.SetComponentData(microbeEntity, new Position { Value = position });
+        _entityManager.SetComponentData(microbeEntity, new Rotation { Value = quaternion.identity });
+        _entityManager.SetComponentData(microbeEntity, new EnemyData() { Speed = 0, SwayAngle = 0, SwayDirection = 1 });
+        _entityManager.SetComponentData(microbeEntity, new PositioningData() { Index = index, life = 1 });
+        _entityManager.SetComponentData(microbeEntity, new Scale() { Value = new float3(scale, scale, scale) });
 
         MeshInstanceRenderer renderer;
         switch (type)
@@ -90,12 +92,12 @@ public class EnemySpawner : MonoBehaviour
                 renderer = bacteriaRenderer; break;
         }
 
-        _entityManager.AddSharedComponentData(enemyEntity, renderer);
+        _entityManager.AddSharedComponentData(microbeEntity, renderer);
 
-        //_entityManager.SetComponentData(enemyEntity, new Heading{ Value = new float3(1,0,0)});
-        //_entityManager.SetComponentData(enemyEntity, new MitosisData(){ A = 0 });
+        //_entityManager.SetComponentData(microbeEntity, new Heading{ Value = new float3(1,0,0)});
+        //_entityManager.SetComponentData(microbeEntity, new MitosisData(){ A = 0 });
 
-        entityArray[total] = enemyEntity;
+        entityArray[total] = microbeEntity;
         total++;
     }
 

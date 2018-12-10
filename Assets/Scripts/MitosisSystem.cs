@@ -40,15 +40,15 @@ public class MitosisSystem : JobComponentSystem
         {
             currentCooldown = totalCooldown;
             //NativeArray<Entity> allEntities = EntityManager.GetAllEntities(Allocator.TempJob);
-            int step = (int)EnemySpawner.total / 500;
-            for (int i = 0; i < EnemySpawner.total; i += step)
+            int step = (int)MicrobeSpawner.total / 500;
+            for (int i = 0; i < MicrobeSpawner.total; i += step)
             {
                 //Entity e = EntityManager.CreateEntity(EnemySpawner._cellArchetype);
 
-                Debug.LogError("there is " + EnemySpawner.total + " and index is " + i);
-                EnemySpawner.SpawnEntity(
-                    EntityManager.GetComponentData<Position>(EnemySpawner.entityArray[i]).Value +
-                    EnemySpawner.ReturnRandomPositionOffset(1f), EnemySpawner.EntityType.Antibody);
+                Debug.LogError("there is " + MicrobeSpawner.total + " and index is " + i);
+                MicrobeSpawner.SpawnEntity(
+                    EntityManager.GetComponentData<Position>(MicrobeSpawner.entityArray[i]).Value +
+                    MicrobeSpawner.ReturnRandomPositionOffset(1f), MicrobeSpawner.EntityType.Antibody);
 
                 //if (EntityManager.HasComponent<MitosisData>(e))
                 //{
