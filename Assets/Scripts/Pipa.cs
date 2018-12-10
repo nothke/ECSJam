@@ -23,7 +23,7 @@ public class Pipa : MonoBehaviour
 
         transform.position += new Vector3(Input.GetAxis("RHorizontal"), 0, Input.GetAxis("RVertical")) * Time.deltaTime * speedMult;
 
-        if (Input.GetButton("Fire2") || Input.GetMouseButton(0))
+        if (Input.GetButton("Fire2"))
         {
             for (int i = 0; i < 7; i++)
             {

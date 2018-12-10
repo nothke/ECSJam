@@ -7,7 +7,7 @@ using Unity.Transforms;
 using System;
 using UnityEngine;
 
-public class MicrobeSpawner// : MonoBehaviour
+public class MicrobeSpawner
 {
     static MeshInstanceRenderer bacteriaRenderer;
     static MeshInstanceRenderer antibodyRenderer;
@@ -46,7 +46,7 @@ public class MicrobeSpawner// : MonoBehaviour
     public static void InitializeWithScene()
     {
         bacteriaRenderer = GameObject.Find("BacteriaRenderer").GetComponent<MeshInstanceRendererComponent>().Value;
-        antibodyRenderer = GameObject.Find("BacteriaRenderer").GetComponent<MeshInstanceRendererComponent>().Value;
+        antibodyRenderer = GameObject.Find("AntibodyRenderer").GetComponent<MeshInstanceRendererComponent>().Value;
 
         // spawn on start
         int playAreaSize = 400;
