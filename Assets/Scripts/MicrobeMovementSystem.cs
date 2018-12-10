@@ -28,6 +28,7 @@ public class MicrobeMovementSystem : JobComponentSystem
     [BurstCompile(Accuracy = Accuracy.Low)]
     private struct PositionJob : IJobProcessComponentData<PositioningData, Position> // Scale
     {
+        
         private readonly NativeArray<int> gridIndexData;
         private readonly NativeArray<float3> entityPositions;
 
@@ -39,9 +40,12 @@ public class MicrobeMovementSystem : JobComponentSystem
 
         public void Execute(ref PositioningData data, ref Position position) // , ref Scale scale
         {
+            
             data.PreviousPosition.x = position.Value.x;
             data.PreviousPosition.y = position.Value.z;
+            
 
+            // Match circle position
             /*
             int distance = 2 + (data.Index / 50) * 2;
 
@@ -51,39 +55,30 @@ public class MicrobeMovementSystem : JobComponentSystem
             position.Value = math.lerp(position.Value, centerPos + new float3(dir.x, dir.y, dir.z) * distance, 0.1f);
             position.Value.y = oldY;*/
 
-            // apply avoidance force
-
-
-            //scale.Value.x = 1;
-
+            // Hacky death
             /*
             if (data.life == 0)
             {
                 position.Value = new float3(100000, 100000, 100000);
             }*/
 
-            // noise
-            //var noiz = noise.cellular(new float2(position.Value.x * 0.01f, position.Value.z * 0.01f));
-            //data.Force = (-2 + noiz);
-            //data.Force = noiz;
-
             int playAreaSize = 400;
             float xin = playAreaSize * 0.5f - position.Value.x;
             float zin = playAreaSize * 0.5f - position.Value.z;
 
             // Pull towards center
+            
             data.Velocity += new float2(
                 xin * 0.0005f,
                 zin * 0.0005f);
 
+            
             // Noise
             var noiz = -0.5f + noise.cellular(new float2(xin * 0.01f, zin * 0.01f));
             var noiz2 = -0.5f + noise.snoise(new float2(xin * 0.1f, zin * 0.1f));
             data.Velocity += noiz * 0.2f + noiz2 * 0.2f;
 
-
-
-            // force
+            // Collision
             /*
             int numberOfForcesPerCell = 10;
             int outerIndex = CoordsToOuterIndex((int)position.Value.x, (int)position.Value.z);
@@ -110,8 +105,8 @@ public class MicrobeMovementSystem : JobComponentSystem
 
                 //data.Force = math.normalize(data.Force);
             }*/
-
-            // Apply forces
+            
+            // Update positions
             position.Value.x += data.Velocity.x;
             position.Value.z += data.Velocity.y;
             data.Velocity *= .8f;

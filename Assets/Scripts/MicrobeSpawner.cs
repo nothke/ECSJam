@@ -19,8 +19,10 @@ public class MicrobeSpawner
     //static float size = 50;
     const float scale = 1;
 
+    public const float worldSize = 400;
+
     public static int total;
-    
+
     public enum EntityType { Bacteria, Antibody };
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
