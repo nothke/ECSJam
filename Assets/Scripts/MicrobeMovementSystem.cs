@@ -43,7 +43,6 @@ public class MicrobeMovementSystem : JobComponentSystem
             
             data.PreviousPosition.x = position.Value.x;
             data.PreviousPosition.y = position.Value.z;
-            
 
             // Match circle position
             /*
@@ -79,7 +78,7 @@ public class MicrobeMovementSystem : JobComponentSystem
             data.Velocity += noiz * 0.2f + noiz2 * 0.2f;
 
             // Collision
-            /*
+            
             int numberOfForcesPerCell = 10;
             int outerIndex = CoordsToOuterIndex((int)position.Value.x, (int)position.Value.z);
             if (outerIndex >= 0 && outerIndex < gridIndexData.Length)
@@ -104,7 +103,7 @@ public class MicrobeMovementSystem : JobComponentSystem
                 //if (applyForce) data.Force = new float2(.5f, .5f);
 
                 //data.Force = math.normalize(data.Force);
-            }*/
+            }
             
             // Update positions
             position.Value.x += data.Velocity.x;
@@ -135,6 +134,9 @@ public class MicrobeMovementSystem : JobComponentSystem
         globalOffset += .2f;
 
         // update avoidance data and calculate force;
+
+        // THIS MAKES THE SYSTEM SLOW!!!
+
         for (int i = 0; i < MicrobeSpawner.total; i++)
         {
             PositioningData indexForcePrevPos = EntityManager.GetComponentData<PositioningData>(entities[i]);

@@ -25,13 +25,15 @@ public class EnemySwaySystem : JobComponentSystem
             }
             data.SwayAngle += swaySpeed * data.SwayDirection * DeltaTime;
             
-            rotation.Value = math.mul(math.normalize(rotation.Value), quaternion.AxisAngle(math.forward(rotation.Value), swaySpeed * data.SwayDirection * DeltaTime));
+            quaternion target = quaternion.AxisAngle(math.forward(rotation.Value), swaySpeed * data.SwayDirection * DeltaTime);
+            rotation.Value = math.mul(math.normalize(rotation.Value), target); 
         }
-        
     }
 
     protected override JobHandle OnUpdate(JobHandle inputDeps)
     {
+        Debug.Log("Blah");
+
         var job = new SwayJob
         {
             DeltaTime = Time.deltaTime
