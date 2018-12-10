@@ -52,9 +52,7 @@ public class EnemyPositioningSystem : JobComponentSystem
             position.Value.y = oldY;*/
 
             // apply avoidance force
-            position.Value.x += data.Velocity.x;
-            position.Value.z += data.Velocity.y;
-            data.Velocity *= .8f;
+
 
             //scale.Value.x = 1;
 
@@ -70,21 +68,24 @@ public class EnemyPositioningSystem : JobComponentSystem
             //data.Force = noiz;
 
             int playAreaSize = 400;
-            float xin = playAreaSize / 2 - position.Value.x;
-            float zin = playAreaSize / 2 - position.Value.z;
+            float xin = playAreaSize * 0.5f - position.Value.x;
+            float zin = playAreaSize * 0.5f - position.Value.z;
 
-            // SABIJAC
+            // Pull towards center
             data.Velocity += new float2(
                 xin * 0.0005f,
                 zin * 0.0005f);
 
+            // Noise
             var noiz = -0.5f + noise.cellular(new float2(xin * 0.01f, zin * 0.01f));
             var noiz2 = -0.5f + noise.snoise(new float2(xin * 0.1f, zin * 0.1f));
-            data.Velocity += noiz * 0.2f + noiz2*0.2f;
+            data.Velocity += noiz * 0.2f + noiz2 * 0.2f;
 
-            int numberOfForcesPerCell = 10;
+
 
             // force
+            /*
+            int numberOfForcesPerCell = 10;
             int outerIndex = CoordsToOuterIndex((int)position.Value.x, (int)position.Value.z);
             if (outerIndex >= 0 && outerIndex < gridIndexData.Length)
             {
@@ -108,8 +109,14 @@ public class EnemyPositioningSystem : JobComponentSystem
                 //if (applyForce) data.Force = new float2(.5f, .5f);
 
                 //data.Force = math.normalize(data.Force);
-            }
+            }*/
+
+            // Apply forces
+            position.Value.x += data.Velocity.x;
+            position.Value.z += data.Velocity.y;
+            data.Velocity *= .8f;
         }
+
     }
 
     private static int CoordsToOuterIndex(int x, int z)
