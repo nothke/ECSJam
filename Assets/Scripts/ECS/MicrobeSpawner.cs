@@ -30,11 +30,15 @@ public class MicrobeSpawner
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     public static void Initialize()
     {
+        return;
+
         Debug.Log("Initializing MicrobeSpawner");
 
         // Create the archetype
         _entityManager = World.Active.GetOrCreateManager<EntityManager>();
+
         entityArray = new NativeArray<Entity>(100000, Allocator.Persistent);
+
         _cellArchetype = _entityManager.CreateArchetype(
             typeof(Position),
             typeof(Rotation),
@@ -49,6 +53,8 @@ public class MicrobeSpawner
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
     public static void InitializeWithScene()
     {
+        return;
+
         bacteriaRenderer = GameObject.Find("BacteriaRenderer").GetComponent<MeshInstanceRendererComponent>().Value;
         antibodyRenderer = GameObject.Find("AntibodyRenderer").GetComponent<MeshInstanceRendererComponent>().Value;
 
