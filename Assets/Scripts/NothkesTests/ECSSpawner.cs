@@ -3,21 +3,24 @@ using System.Collections.Generic;
 using UnityEngine;
 
 using Unity.Entities;
-using Unity.Transforms;
 
-public class FillerSpawner : MonoBehaviour
+public abstract class ECSSpawner : MonoBehaviour
 {
-    const int count = 10000;
+    public float count = 10000;
+
+    public abstract void OnStart();
+
+    static EntityManager manager;
 
     void Start()
     {
         EntityManager manager = World.Active.GetOrCreateManager<EntityManager>();
 
         var archetype = manager.CreateArchetype(
-            typeof(ArrayFillData)
+            typeof(RandomFillData)
             );
 
-        //Entity entity = manager.CreateEntity(archetype);
+        Entity entity = manager.CreateEntity(archetype);
 
         for (int i = 0; i < count; i++)
         {
