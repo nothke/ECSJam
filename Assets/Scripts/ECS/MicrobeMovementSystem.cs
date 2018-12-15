@@ -46,14 +46,15 @@ public class MicrobeMovementSystem : JobComponentSystem
     // -WithEntity gives you Entity too, so we can use it's Index
     struct FillDataArrayJob : IJobProcessComponentDataWithEntity<Position>
     {
-        [NativeDisableParallelForRestriction] // this allows us to write to the same data in parallel
+        // this allows us to write to the same data in parallel, but it'll run on single thread
+        [NativeDisableParallelForRestriction]
         public NativeArray<int> gridIndexData;
 
         public void Execute(Entity entity, int index, ref Position data)
         {
             int i = CoordsToOuterIndex((int)data.Value.x, (int)data.Value.z);
 
-            bool isWithinGrid = i >= 0 && i < gridIndexData.Length;
+            bool isWithinGrid = i >= 0 && i < ARRAY_SIZE;
 
             if (!isWithinGrid) return;
 
