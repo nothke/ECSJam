@@ -9,7 +9,8 @@ using UnityEngine;
 
 public class MicrobeSpawner
 {
-    const int spawnCount = 20000;
+    const int SPAWN_COUNT = 5000;
+    public const float WORLD_SIZE = 200;
 
     static MeshInstanceRenderer bacteriaRenderer;
     static MeshInstanceRenderer antibodyRenderer;
@@ -21,7 +22,7 @@ public class MicrobeSpawner
     //static float size = 50;
     const float scale = 1;
 
-    public const float worldSize = 400;
+    
 
     public static int total;
 
@@ -30,8 +31,6 @@ public class MicrobeSpawner
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     public static void Initialize()
     {
-        return;
-
         Debug.Log("Initializing MicrobeSpawner");
 
         // Create the archetype
@@ -53,8 +52,6 @@ public class MicrobeSpawner
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
     public static void InitializeWithScene()
     {
-        return;
-
         bacteriaRenderer = GameObject.Find("BacteriaRenderer").GetComponent<MeshInstanceRendererComponent>().Value;
         antibodyRenderer = GameObject.Find("AntibodyRenderer").GetComponent<MeshInstanceRendererComponent>().Value;
 
@@ -62,7 +59,7 @@ public class MicrobeSpawner
         int playAreaSize = 400;
         float size = playAreaSize;
 
-        for (int i = 0; i < spawnCount; i++)
+        for (int i = 0; i < SPAWN_COUNT; i++)
         {
             Vector3 pos = new Vector2(size * 0.5f, size * 0.5f) + UnityEngine.Random.insideUnitCircle * size * 0.5f;
             pos.z = pos.y;

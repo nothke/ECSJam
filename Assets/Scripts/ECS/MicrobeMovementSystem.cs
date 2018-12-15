@@ -14,23 +14,66 @@ using Unity.Burst;
 
 public class MicrobeMovementSystem : JobComponentSystem
 {
-    //public int playAreaSize = 256;
-    private int numberOfForcesPerCell = 5;
+    const int COLLISION_TILES_SIZE = 200;
+    const int COLLISION_FORCES_PER_TILE = 5;
+
+    const int ARRAY_SIZE = COLLISION_TILES_SIZE * COLLISION_TILES_SIZE * COLLISION_FORCES_PER_TILE;
+
     private float3 centerPos = new float3(0, 0, 0);
     private float3 direction = new float3(1, 0, 0);
     private float globalOffset = 0;
-    private NativeArray<int> gridIndexData;
     private bool entitiesLoaded;
 
+    [NativeDisableParallelForRestriction]
+    private NativeArray<int> gridIndexArray;
+
     private NativeArray<Entity> entities;
-    private NativeArray<float3> entityPositions;
+    private NativeArray<float3> entityPositionsArray;
+
+    ComponentDataArray<Position> positions;
+
+    /*
+    struct ArrayClearJob : IJobParallelFor
+    {
+        public NativeArray<int> indexArray;
+
+        public void Execute(int i)
+        {
+            indexArray[i] = -1;
+        }
+    }*/
+
+    // -WithEntity gives you Entity too, so we can use it's Index
+    struct FillDataArrayJob : IJobProcessComponentDataWithEntity<Position>
+    {
+        [NativeDisableParallelForRestriction] // this allows us to write to the same data in parallel
+        public NativeArray<int> gridIndexData;
+
+        public void Execute(Entity entity, int index, ref Position data)
+        {
+            int i = CoordsToOuterIndex((int)data.Value.x, (int)data.Value.z);
+
+            bool isWithinGrid = i >= 0 && i < gridIndexData.Length;
+
+            if (!isWithinGrid) return;
+
+            for (int gridIndex = i; gridIndex < i + COLLISION_FORCES_PER_TILE; gridIndex++)
+            {
+                if (gridIndexData[gridIndex] == -1) continue;
+
+                gridIndexData[gridIndex] = entity.Index;
+                // TODO: Add position too
+            }
+        }
+    }
 
     [BurstCompile(Accuracy = Accuracy.Low)]
     private struct PositionJob : IJobProcessComponentData<MovementData, Position> // Scale
     {
-
-        private readonly NativeArray<int> gridIndexData;
-        private readonly NativeArray<float3> entityPositions;
+        [Unity.Collections.ReadOnly]
+        private NativeArray<int> gridIndexData;
+        [Unity.Collections.ReadOnly]
+        private NativeArray<float3> entityPositions;
 
         public PositionJob(NativeArray<int> gridData, NativeArray<float3> ent)
         {
@@ -72,38 +115,45 @@ public class MicrobeMovementSystem : JobComponentSystem
                 zin * 0.0005f);
 
             // Noise
+            /*
             var noiz = -0.5f + noise.cellular(new float2(xin * 0.01f, zin * 0.01f));
             var noiz2 = -0.5f + noise.snoise(new float2(xin * 0.1f, zin * 0.1f));
-            data.Velocity += noiz * 0.2f + noiz2 * 0.2f;
+            data.Velocity += noiz * 0.2f + noiz2 * 0.2f;*/
 
             // Collision
 
-            int numberOfForcesPerCell = 10;
-            int outerIndex = CoordsToOuterIndex((int)position.Value.x, (int)position.Value.z);
-            if (outerIndex >= 0 && outerIndex < gridIndexData.Length)
+            int thisGridIndex = CoordsToOuterIndex((int)position.Value.x, (int)position.Value.z);
+            bool isWithinGrid = thisGridIndex >= 0 && thisGridIndex < gridIndexData.Length;
+
+            if (isWithinGrid)
             {
-
-                for (int i = outerIndex; i < outerIndex + numberOfForcesPerCell; i++)
+                for (int i = thisGridIndex; i < thisGridIndex + COLLISION_FORCES_PER_TILE; i++)
                 {
-                    int entityIndex = gridIndexData[i];
-                    if (entityIndex != data.Index && entityIndex != 0)
+                    int otherEntityIndex = gridIndexData[i];
+
+                    if (otherEntityIndex == data.Index) continue; // skip if same
+                    if (otherEntityIndex == -1) continue; // skip if empty
+
+                    data.Velocity = -data.Velocity * 100;
+                    position.Value.x = 100000;
+
+                    /*
+                    var entPos = entityPositions[otherEntityIndex];
+
+                    var diff = new float2(
+                        position.Value.x - entPos.x,
+                        position.Value.z - entPos.z);
+
+                    var sqrDistance = math.lengthsq(diff);
+
+                    if (sqrDistance < 9f)
                     {
-                        var entPos = entityPositions[entityIndex];
-
-                        var diff = new float2(
-                            position.Value.x - entPos.x,
-                            position.Value.z - entPos.z);
-
-                        var sqrDistance = math.lengthsq(diff);
-
-                        if (sqrDistance < 9f)
-                        {
-                            //data.life--;
-                            data.Velocity += -diff;
-                            break;
-                        }
-                        //data.Force += new float2(position.Value.x - entPos.x, position.Value.z - entPos.z);
-                    }
+                        //data.life--;
+                        //data.Velocity += -diff;
+                        data.Velocity = -data.Velocity;
+                        break;
+                    }*/
+                    //data.Force += new float2(position.Value.x - entPos.x, position.Value.z - entPos.z);
                 }
 
                 //if (applyForce) data.Force = new float2(.5f, .5f);
@@ -118,28 +168,49 @@ public class MicrobeMovementSystem : JobComponentSystem
         }
 
     }
-    
+
     private static int CoordsToOuterIndex(int x, int z)
     {
-        int numberOfForcesPerCell = 10;
-        int playAreaSize = 400;
-        return x * playAreaSize * numberOfForcesPerCell + z * numberOfForcesPerCell;
+        //int numberOfForcesPerCell = 10;
+        //int playAreaSize = 400;
+        return (x * COLLISION_TILES_SIZE + z) * COLLISION_FORCES_PER_TILE;
+    }
+
+    protected override void OnStartRunning()
+    {
+        entityPositionsArray = new NativeArray<float3>(100000, Allocator.Persistent);
+
+        gridIndexArray = new NativeArray<int>(ARRAY_SIZE, Allocator.Persistent);
+
+        entitiesLoaded = true;
     }
 
     protected override JobHandle OnUpdate(JobHandle inputDeps)
     {
-        if (!entitiesLoaded)
+        // reset values to -1
+        var clearArrayJob = new MemsetNativeArray<int> // MemsetNativeArray job assigns the same value to the whole array
         {
-            entityPositions = new NativeArray<float3>(100000, Allocator.Persistent);
-            entitiesLoaded = true;
-            int playAreaSize = 400;
-            gridIndexData = new NativeArray<int>(playAreaSize * playAreaSize * numberOfForcesPerCell, Allocator.Persistent);
-        }
-        entities = MicrobeSpawner.entityArray;
-        centerPos = GameObject.FindObjectOfType<InputComponent>().transform.position;
-        globalOffset += .2f;
+            Source = gridIndexArray,
+            Value = -1
+        };
 
-        // update avoidance data and calculate force;
+        var clearArrayJobHandle = clearArrayJob.Schedule(ARRAY_SIZE, 64, inputDeps); // not sure what the 64 innerloop batch count means
+
+        // fill index array job
+        var fillJob = new FillDataArrayJob()
+        {
+            gridIndexData = gridIndexArray
+        };
+
+        var fillJobHandle = fillJob.Schedule(this, clearArrayJobHandle); // makes sure the clearArrayJob is complete
+
+        #region legacy slow
+        /*
+        entities = MicrobeSpawner.entityArray;
+        centerPos = Object.FindObjectOfType<InputComponent>().transform.position;
+        globalOffset += .2f; // WTF IS THIS
+
+        // update avoidance data and calculate force
 
         // THIS MAKES THE SYSTEM SLOW!!!
         
@@ -147,48 +218,53 @@ public class MicrobeMovementSystem : JobComponentSystem
         {
             MovementData indexForcePrevPos = EntityManager.GetComponentData<MovementData>(entities[i]);
             Position position = EntityManager.GetComponentData<Position>(entities[i]);
-            entityPositions[i] = position.Value;
+            entityPositionsArray[i] = position.Value;
 
             // remove old position from grid
             int outerIndex = CoordsToOuterIndex(
                 (int)indexForcePrevPos.PreviousPosition.x,
                 (int)indexForcePrevPos.PreviousPosition.y);
 
-            if (outerIndex >= 0 && outerIndex < gridIndexData.Length)
+            if (outerIndex >= 0 && outerIndex < gridIndexArray.Length)
             {
-                for (int innerIndex = outerIndex; innerIndex < outerIndex + numberOfForcesPerCell; innerIndex++)
+                for (int innerIndex = outerIndex; innerIndex < outerIndex + COLLISION_FORCES_PER_TILE; innerIndex++)
                 {
-                    if (gridIndexData[innerIndex] == indexForcePrevPos.Index)
+                    if (gridIndexArray[innerIndex] == indexForcePrevPos.Index)
                     {
-                        gridIndexData[innerIndex] = 0;
+                        gridIndexArray[innerIndex] = 0;
                     }
                 }
             }
 
             // add new position to grid
             outerIndex = CoordsToOuterIndex((int)position.Value.x, (int)position.Value.z);
-            if (outerIndex >= 0 && outerIndex < gridIndexData.Length)
+            if (outerIndex >= 0 && outerIndex < gridIndexArray.Length)
             {
-                for (int innerIndex = outerIndex; innerIndex < outerIndex + numberOfForcesPerCell; innerIndex++)
+                for (int innerIndex = outerIndex; innerIndex < outerIndex + COLLISION_FORCES_PER_TILE; innerIndex++)
                 {
-                    if (gridIndexData[innerIndex] == 0)
+                    if (gridIndexArray[innerIndex] == 0)
                     {
-                        gridIndexData[innerIndex] = indexForcePrevPos.Index;
+                        gridIndexArray[innerIndex] = indexForcePrevPos.Index;
                     }
                 }
             }
-        }
+        }*/
+        #endregion
 
-        // start job
-        var job = new PositionJob(gridIndexData, entityPositions);
-        return job.Schedule(this, inputDeps);
+        // movement job
+        var movementJob = new PositionJob(gridIndexArray, entityPositionsArray); 
+        var movementJobHandle = movementJob.Schedule(this, fillJobHandle);  // makes sure the fillJob is complete
+
+        return movementJobHandle;
+
+        //return movementJob.Schedule(this, inputDeps);
     }
 
     protected override void OnStopRunning()
     {
-        gridIndexData.Dispose();
+        gridIndexArray.Dispose();
         entities.Dispose();
-        entityPositions.Dispose();
+        entityPositionsArray.Dispose();
         //EnemySpawner.entityArray.Dispose();
         base.OnStopRunning();
     }
